@@ -14,6 +14,50 @@ public enum FxmlView {
 			return "/fxml/User.fxml";
 		}
 	}, // Añadir un nuevo enum para añadir pantalla.fxml, con un nuevo pantalla.title
+	ADMINISTRADOR {
+		@Override
+		public String getTitle() {
+			return getStringFromResourceBundle("admin.title");
+		}
+
+		@Override
+		public String getFxmlFile() {
+			return "/fxml/Admin.fxml";
+		}
+	},
+	ESTUDIANTE {
+		@Override
+		public String getTitle() {
+			return getStringFromResourceBundle("estudiante.title");
+		}
+
+		@Override
+		public String getFxmlFile() {
+			return "/fxml/Estudiante.fxml";
+		}
+	},
+	PROFESORADO {
+		@Override
+		public String getTitle() {
+			return getStringFromResourceBundle("profesorado.title");
+		}
+
+		@Override
+		public String getFxmlFile() {
+			return "/fxml/Profesorado.fxml";
+		}
+	},
+	TUTOR {
+		@Override
+		public String getTitle() {
+			return getStringFromResourceBundle("tutor.title");
+		}
+
+		@Override
+		public String getFxmlFile() {
+			return "/fxml/Tutor.fxml";
+		}
+	},
 	LOGIN {
 		@Override
 		public String getTitle() {

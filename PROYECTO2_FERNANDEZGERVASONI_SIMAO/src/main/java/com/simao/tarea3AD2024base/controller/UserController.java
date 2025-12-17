@@ -2,7 +2,6 @@ package com.simao.tarea3AD2024base.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import com.simao.tarea3AD2024base.config.StageManager;
-import com.simao.tarea3AD2024base.modelo.User;
-import com.simao.tarea3AD2024base.services.UserService;
 import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.application.Platform;
@@ -39,9 +36,6 @@ public class UserController implements Initializable {
 	@Autowired
 	private StageManager stageManager;
 
-	@Autowired
-	private UserService userService;
-
 	@FXML
 	private void exit(ActionEvent event) {
 		Platform.exit();
@@ -57,17 +51,6 @@ public class UserController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-
-		List<User> users = userService.findAll();
-		for (User u : users) {
-
-			if (u.getEmail().equals(LoginController.user)) {
-				userId.setText(u.getRole());
-				break;
-			} else {
-				userId.setText("Error");
-			}
-		}
 
 	}
 
