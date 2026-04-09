@@ -10,8 +10,8 @@ public class Tutor extends Persona {
 
 	private Empresa empresa;
 
-	public Tutor(int id, String email, String user, String password, String nomre, Perfil perfil, Empresa empresa) {
-		super(id, email, user, password, nomre, perfil);
+	public Tutor(int id, String email, String user, String password, String nombre, Perfil perfil, Empresa empresa) {
+		super(id, email, user, password, nombre, perfil);
 		this.empresa = empresa;
 	}
 

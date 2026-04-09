@@ -11,8 +11,8 @@ public class Profesor extends Persona {
 
 	private String[] ciclos;
 
-	public Profesor(int id, String email, String user, String password, String nomre, Perfil perfil, String[] ciclos) {
-		super(id, email, user, password, nomre, perfil);
+	public Profesor(int id, String email, String user, String password, String nombre, Perfil perfil, String[] ciclos) {
+		super(id, email, user, password, nombre, perfil);
 		this.ciclos = ciclos;
 	}
 

@@ -12,16 +12,16 @@ public abstract class Persona {
 	protected String email;
 	protected String user;
 	protected String password;
-	protected String nomre;
+	protected String nombre;
 	protected Perfil perfil;
 
-	public Persona(int id, String email, String user, String password, String nomre, Perfil perfil) {
+	public Persona(int id, String email, String user, String password, String nombre, Perfil perfil) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.user = user;
 		this.password = password;
-		this.nomre = nomre;
+		this.nombre = nombre;
 		this.perfil = perfil;
 	}
 
@@ -57,12 +57,12 @@ public abstract class Persona {
 		this.password = password;
 	}
 
-	public String getNomre() {
-		return nomre;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setNomre(String nomre) {
-		this.nomre = nomre;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public Perfil getPerfil() {

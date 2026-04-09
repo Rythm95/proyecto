@@ -12,9 +12,9 @@ public class Alumno extends Persona {
 	private boolean mayoriaEdad;
 	private Empresa empresa;
 
-	public Alumno(int id, String email, String user, String password, String nomre, Perfil perfil, String ciclo,
+	public Alumno(int id, String email, String user, String password, String nombre, Perfil perfil, String ciclo,
 			boolean mayoriaEdad, Empresa empresa) {
-		super(id, email, user, password, nomre, perfil);
+		super(id, email, user, password, nombre, perfil);
 		this.ciclo = ciclo;
 		this.mayoriaEdad = mayoriaEdad;
 		this.empresa = empresa;
