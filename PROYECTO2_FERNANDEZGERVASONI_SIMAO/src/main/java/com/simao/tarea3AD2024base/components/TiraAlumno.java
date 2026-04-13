@@ -20,7 +20,7 @@ public class TiraAlumno extends GridPane {
 
 	public TiraAlumno() {
 
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/simao/tarea3AD2024base/components/TiraAlumno.fxml"));
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TiraAlumno.fxml"));
 
 		loader.setRoot(this);
 		loader.setController(this);

@@ -6,7 +6,7 @@
 */
 package com.simao.tarea3AD2024base.modelo;
 
-// Meter un bool Activo/NoActivo para dar de baja 
+
 public class Profesor extends Persona {
 
 	private String[] ciclos;

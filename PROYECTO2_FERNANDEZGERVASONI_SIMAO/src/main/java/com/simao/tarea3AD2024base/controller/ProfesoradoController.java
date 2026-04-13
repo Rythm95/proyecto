@@ -9,6 +9,7 @@ import com.simao.tarea3AD2024base.components.TiraAlumno;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
 
@@ -24,7 +25,12 @@ public class ProfesoradoController implements Initializable {
 		
 
 		TiraAlumno tira = new TiraAlumno("Pedro", "2º DAM", "Medialab");
+		VBox.setMargin(tira, new Insets(5));
 		vBoxAlumnos.getChildren().add(tira);
+		
+		TiraAlumno tira2 = new TiraAlumno("Pedro2", "2º DAM", "Medialab");
+		VBox.setMargin(tira2, new Insets(5));
+		vBoxAlumnos.getChildren().add(tira2);
 
 	}
 
