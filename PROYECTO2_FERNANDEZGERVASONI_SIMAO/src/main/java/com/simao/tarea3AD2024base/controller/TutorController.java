@@ -14,7 +14,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 
 @Controller
-public class ProfesoradoController implements Initializable {
+public class TutorController implements Initializable {
 
 	@Lazy
 	@Autowired

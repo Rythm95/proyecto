@@ -3,17 +3,6 @@ package com.simao.tarea3AD2024base.view;
 import java.util.ResourceBundle;
 
 public enum FxmlView {
-	USER {
-		@Override
-		public String getTitle() {
-			return getStringFromResourceBundle("user.title");
-		}
-
-		@Override
-		public String getFxmlFile() {
-			return "/fxml/User.fxml";
-		}
-	}, // Añadir un nuevo enum para añadir pantalla.fxml, con un nuevo pantalla.title
 	ADMINISTRADOR {
 		@Override
 		public String getTitle() {

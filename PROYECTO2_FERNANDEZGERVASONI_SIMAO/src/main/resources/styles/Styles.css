@@ -1,10 +1,98 @@
 /* CSS for app */
 
-.btnGreen{
-	-fx-background-color:  #3cbc53;
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f4f6f9;
 }
 
-.background{
-	-fx-background-color: #4d4d4d;
+/* Header */
+.header {
+    -fx-background-color: linear-gradient(to right, #1F9AFF, #8ACAFF);
 }
 
+.header .label {
+    -fx-text-fill: white;
+}
+
+/* Tabs */
+.tab-pane {
+    -fx-background-color: transparent;
+}
+
+.tab {
+    -fx-background-color: #e6ecf5;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.tab:selected {
+    -fx-background-color: white;
+}
+
+.tab-label {
+    -fx-text-fill: #333;
+    -fx-font-weight: bold;
+}
+
+.tab-content-area {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 0 10 10 10;
+}
+
+/* VBox */
+.card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-spacing: 10;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 3);
+}
+
+/* Login */
+.login-box {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4);
+}
+
+.login-background{
+	-fx-background-color: linear-gradient(to bottom, #1F9AFF, #5CB6FF);
+}
+
+/* Botones */
+.btn-primary {
+    -fx-background-color: #5CB6FF;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    
+}
+
+.btn-primary:hover {
+    -fx-background-color: #1F9AFF;
+}
+
+.btn-secondary {
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 8;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #cccccc;
+}
+
+/* Labels */
+.title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Errores */
+.error-label {
+    -fx-text-fill: red;
+    -fx-font-size: 12px;
+}
+
+.text-field:error, .password-field:error, .date-picker:error, .combo-box:error, .spinner:error{
+    -fx-border-color: red;
+}

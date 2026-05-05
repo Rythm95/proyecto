@@ -14,6 +14,7 @@ import com.simao.tarea3AD2024base.modelo.User;
 import com.simao.tarea3AD2024base.services.UserService;
 import com.simao.tarea3AD2024base.view.FxmlView;
 
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,13 +35,13 @@ public class LoginController implements Initializable {
 	private Button btnLogin;
 
 	@FXML
-	private PasswordField password;
+	private TextField usernameField;
 
 	@FXML
-	private TextField username;
+	private PasswordField passwordField;
 
 	@FXML
-	private Label lblLogin;
+	private Label lblError;
 
 	@Autowired // Auto-conectar
 	private UserService userService;
@@ -51,47 +52,51 @@ public class LoginController implements Initializable {
 
 	@FXML
 	private void login(ActionEvent event) throws IOException {
-		if (userService.authenticate(getUsername(), getPassword())) {
+		/*if (!getUsername().isBlank() && !getPassword().isBlank())
+			if (userService.authenticate(getUsername(), getPassword())) {
 
-			List<User> users = userService.findAll();
-			String rol = "";
-			for (User u : users) {
+				List<User> users = userService.findAll();
+				String rol = "";
+				for (User u : users) {
 
-				if (u.getEmail().equals(getUsername())) {
-					rol = u.getRole();
+					if (u.getEmail().equals(getUsername())) {
+						rol = u.getRole();
+						break;
+					}
+				}*/
+		if (true) {
+			String rol = getUsername();
+				switch (rol) {
+				case "Admin":
+					stageManager.switchScene(FxmlView.ADMINISTRADOR);
 					break;
+				case "Alumnado":
+					stageManager.switchScene(FxmlView.ESTUDIANTE);
+					break;
+				case "Profesorado":
+					stageManager.switchScene(FxmlView.PROFESORADO);
+					break;
+				case "Tutor":
+					stageManager.switchScene(FxmlView.TUTOR);
+					break;
+
 				}
+
+			} else {
+				lblError.setVisible(true);
 			}
 
-			switch (rol) {
-			case "Admin":
-				stageManager.switchScene(FxmlView.ADMINISTRADOR);
-				break;
-			case "Alumnado":
-				stageManager.switchScene(FxmlView.ESTUDIANTE);
-				break;
-			case "Profesorado":
-				stageManager.switchScene(FxmlView.PROFESORADO);
-				break;
-			case "Tutor":
-				stageManager.switchScene(FxmlView.TUTOR);
-				break;
+		usernameField.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"), getUsername().isEmpty());
+		passwordField.pseudoClassStateChanged(PseudoClass.getPseudoClass("error"), getPassword().isEmpty());
 
-			}
-
-			//stageManager.switchScene(FxmlView.USER);
-
-		} else {
-			lblLogin.setText("Error al iniciar sesión.");
-		}
 	}
 
 	public String getPassword() {
-		return password.getText();
+		return passwordField.getText();
 	}
 
 	public String getUsername() {
-		return username.getText();
+		return usernameField.getText();
 	}
 
 	@Override
