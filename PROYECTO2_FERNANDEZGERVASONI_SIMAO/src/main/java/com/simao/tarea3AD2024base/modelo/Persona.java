@@ -1,23 +1,55 @@
-/**
-* Clase Persona.java
-*
-* @author Simao Fernandez Gervasoni
-* @version 1.0
-*/
 package com.simao.tarea3AD2024base.modelo;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+
+/**
+ * Clase Persona.java
+ *
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ */
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "persona")
 public abstract class Persona {
 
-	protected int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	protected Long id;
+
+	@Column(unique = true, nullable = false)
 	protected String email;
+
+	@Column(unique = true, nullable = false)
 	protected String user;
+
+	@Column(nullable = false)
 	protected String password;
+
+	@Column(nullable = false)
 	protected String nombre;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	protected Perfil perfil;
 
-	public Persona(int id, String email, String user, String password, String nombre, Perfil perfil) {
+	public Persona() {
+	}
+
+	
+
+	public Persona(String email, String user, String password, String nombre, Perfil perfil) {
 		super();
-		this.id = id;
 		this.email = email;
 		this.user = user;
 		this.password = password;
@@ -25,11 +57,13 @@ public abstract class Persona {
 		this.perfil = perfil;
 	}
 
-	public int getId() {
+
+
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

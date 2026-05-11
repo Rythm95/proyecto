@@ -6,18 +6,33 @@
 */
 package com.simao.tarea3AD2024base.modelo;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "alumno")
 public class Alumno extends Persona {
 
+	@Column(nullable = false)
 	private String ciclo;
-	private boolean mayoriaEdad;
-	private Empresa empresa;
 
-	public Alumno(int id, String email, String user, String password, String nombre, Perfil perfil, String ciclo,
-			boolean mayoriaEdad, Empresa empresa) {
-		super(id, email, user, password, nombre, perfil);
+	private boolean mayoriaEdad;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idTutor")
+	private Tutor tutorEmpresa;
+
+	public Alumno() {
+	}
+
+	public Alumno(String email, String user, String password, String nombre, String ciclo, boolean mayoriaEdad) {
+		super(email, user, password, nombre, Perfil.ALUMNADO);
 		this.ciclo = ciclo;
 		this.mayoriaEdad = mayoriaEdad;
-		this.empresa = empresa;
 	}
 
 	public String getCiclo() {
@@ -36,12 +51,11 @@ public class Alumno extends Persona {
 		this.mayoriaEdad = mayoriaEdad;
 	}
 
-	public Empresa getEmpresa() {
-		return empresa;
+	public Tutor getTutorEmpresa() {
+		return tutorEmpresa;
 	}
 
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
+	public void setTutorEmpresa(Tutor tutorEmpresa) {
+		this.tutorEmpresa = tutorEmpresa;
 	}
-
 }
