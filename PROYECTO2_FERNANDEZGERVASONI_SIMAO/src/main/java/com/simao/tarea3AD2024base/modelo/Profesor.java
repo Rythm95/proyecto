@@ -10,38 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "profesor")
 public class Profesor extends Persona {
 
-	@Column(name = "ciclos")
-	private String ciclos;
-
 	@OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Curso> cursos = new ArrayList<>();
+	private List<Modulo> modulos = new ArrayList<>();
 
 	public Profesor() {
 	}
 
-	public Profesor(String email, String user, String password, String nombre, String ciclos) {
+	public Profesor(String email, String user, String password, String nombre) {
 		super(email, user, password, nombre, Perfil.PROFESORADO);
-		this.ciclos = ciclos;
 	}
 
-	public String getCiclos() {
-		return ciclos;
+	public List<Modulo> getModulos() {
+		return modulos;
 	}
 
-	public void setCiclos(String ciclos) {
-		this.ciclos = ciclos;
-	}
-
-	public List<Curso> getCursos() {
-		return cursos;
+	public void setModulos(List<Modulo> modulos) {
+		this.modulos = modulos;
 	}
 }

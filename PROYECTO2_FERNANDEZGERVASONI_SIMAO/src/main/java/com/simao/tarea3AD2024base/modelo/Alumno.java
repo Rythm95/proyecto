@@ -11,16 +11,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "alumno")
 public class Alumno extends Persona {
 
 	@Column(nullable = false)
 	private String ciclo;
 
 	private boolean mayoriaEdad;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "grupo_id")
+    private Grupo grupo;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idTutor")

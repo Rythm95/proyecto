@@ -15,10 +15,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "tutor")
 public class Tutor extends Persona {
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -26,7 +24,7 @@ public class Tutor extends Persona {
 	private Empresa empresa;
 
 	@OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<TutorCurso> asignaciones = new ArrayList<>();
+	private List<FormacionEmpresa> asignaciones = new ArrayList<>();
 
 	public Tutor() {
 	}
@@ -44,11 +42,11 @@ public class Tutor extends Persona {
 		this.empresa = empresa;
 	}
 
-	public List<TutorCurso> getAsignaciones() {
+	public List<FormacionEmpresa> getAsignaciones() {
 		return asignaciones;
 	}
 
-	public void setAsignaciones(List<TutorCurso> asignaciones) {
+	public void setAsignaciones(List<FormacionEmpresa> asignaciones) {
 		this.asignaciones = asignaciones;
 	}
 

@@ -6,50 +6,46 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "curso")
-public class Curso {
+public class Grupo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(unique = true, nullable = false)
+	@Column(unique = true)
 	private String codigo;
 
-	@Column(nullable = false)
 	private String ciclo;
 
-	@Column(nullable = false)
 	private int curso;
 
-	@Column(name = "yearAcademico", nullable = false)
+	/* Diurno o Vespertino */
+	private String modalidad;
+
 	private String yearAcademico;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "idProfesor")
-	private Profesor profesor;
+	@OneToMany(mappedBy = "grupo")
+	private List<Alumno> alumnos = new ArrayList<>();
 
-	@OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<TutorCurso> asignaciones = new ArrayList<>();
+	@OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Modulo> modulos = new ArrayList<>();
 
-	public Curso() {
+	public Grupo() {
 	}
 
-	public Curso(String codigo, String ciclo, int curso, String anioAcademico) {
+	public Grupo(String codigo, String ciclo, int curso, String modalidad, String yearAcademico) {
+		super();
 		this.codigo = codigo;
 		this.ciclo = ciclo;
 		this.curso = curso;
-		this.yearAcademico = anioAcademico;
+		this.modalidad = modalidad;
+		this.yearAcademico = yearAcademico;
 	}
 
 	public Long getId() {
@@ -84,23 +80,35 @@ public class Curso {
 		this.curso = curso;
 	}
 
-	public String getAnioAcademico() {
+	public String getModalidad() {
+		return modalidad;
+	}
+
+	public void setModalidad(String modalidad) {
+		this.modalidad = modalidad;
+	}
+
+	public String getYearAcademico() {
 		return yearAcademico;
 	}
 
-	public void setAnioAcademico(String anioAcademico) {
-		this.yearAcademico = anioAcademico;
+	public void setYearAcademico(String yearAcademico) {
+		this.yearAcademico = yearAcademico;
 	}
 
-	public Profesor getProfesor() {
-		return profesor;
+	public List<Alumno> getAlumnos() {
+		return alumnos;
 	}
 
-	public void setProfesor(Profesor profesor) {
-		this.profesor = profesor;
+	public void setAlumnos(List<Alumno> alumnos) {
+		this.alumnos = alumnos;
 	}
 
-	public List<TutorCurso> getAsignaciones() {
-		return asignaciones;
+	public List<Modulo> getModulos() {
+		return modulos;
+	}
+
+	public void setModulos(List<Modulo> modulos) {
+		this.modulos = modulos;
 	}
 }

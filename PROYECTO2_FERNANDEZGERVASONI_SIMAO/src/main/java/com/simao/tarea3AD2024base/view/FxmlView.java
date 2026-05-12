@@ -14,7 +14,7 @@ public enum FxmlView {
 			return "/fxml/Admin.fxml";
 		}
 	},
-	ESTUDIANTE {
+	ALUMNADO {
 		@Override
 		public String getTitle() {
 			return getStringFromResourceBundle("estudiante.title");
