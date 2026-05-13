@@ -304,16 +304,16 @@ public class AdminController implements Initializable {
 			editarModulo();
 		}
 	}
-	
+
 	private void switchButton(Button activo, Button... inactivos) {
 
-	    activo.getStyleClass().removeAll("btn-secondary", "btn-primary");
-	    activo.getStyleClass().add("btn-primary");
+		activo.getStyleClass().removeAll("btn-secondary", "btn-primary");
+		activo.getStyleClass().add("btn-primary");
 
-	    for (Button b : inactivos) {
-	        b.getStyleClass().removeAll("btn-secondary", "btn-primary");
-	        b.getStyleClass().add("btn-secondary");
-	    }
+		for (Button b : inactivos) {
+			b.getStyleClass().removeAll("btn-secondary", "btn-primary");
+			b.getStyleClass().add("btn-secondary");
+		}
 	}
 
 	@FXML
