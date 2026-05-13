@@ -9,15 +9,14 @@ package com.simao.tarea3AD2024base.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 @Entity
 public class Profesor extends Persona {
 
-	@OneToMany(mappedBy = "profesor", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Modulo> modulos = new ArrayList<>();
+	@OneToMany(mappedBy = "profesor")
+	private List<ModuloGrupo> modulosGrupo = new ArrayList<>();
 
 	public Profesor() {
 	}
@@ -26,11 +25,17 @@ public class Profesor extends Persona {
 		super(email, user, password, nombre, Perfil.PROFESORADO);
 	}
 
-	public List<Modulo> getModulos() {
-		return modulos;
+	public List<ModuloGrupo> getModulos() {
+		return modulosGrupo;
 	}
 
-	public void setModulos(List<Modulo> modulos) {
-		this.modulos = modulos;
+	public void setModulos(List<ModuloGrupo> modulosGrupo) {
+		this.modulosGrupo = modulosGrupo;
 	}
+
+	@Override
+	public String toString() {
+		return nombre;
+	}
+
 }

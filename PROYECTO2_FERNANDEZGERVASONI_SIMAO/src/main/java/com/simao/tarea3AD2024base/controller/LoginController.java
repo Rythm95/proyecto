@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 
 import com.simao.tarea3AD2024base.config.StageManager;
 import com.simao.tarea3AD2024base.modelo.Persona;
+import com.simao.tarea3AD2024base.services.CicloService;
 import com.simao.tarea3AD2024base.services.PersonaService;
 import com.simao.tarea3AD2024base.services.Session;
 import com.simao.tarea3AD2024base.view.FxmlView;
@@ -36,6 +37,9 @@ public class LoginController implements Initializable {
 
 	@Autowired
 	private PersonaService peService;
+
+	@Autowired
+	private CicloService ciService;
 
 	@Autowired
 	private Session session;
@@ -95,11 +99,11 @@ public class LoginController implements Initializable {
 			case PROFESORADO:
 				stageManager.switchScene(FxmlView.PROFESORADO);
 				break;
-			
+
 			case TUTOR:
 				stageManager.switchScene(FxmlView.TUTOR);
 				break;
-				
+
 			default:
 				break;
 			}
@@ -111,6 +115,8 @@ public class LoginController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		if (ciService.findAll().isEmpty())
+			ciService.loadAll();
 	}
 
 }

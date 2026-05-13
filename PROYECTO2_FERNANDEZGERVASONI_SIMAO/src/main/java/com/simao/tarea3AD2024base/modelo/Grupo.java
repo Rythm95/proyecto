@@ -3,57 +3,40 @@ package com.simao.tarea3AD2024base.modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
 public class Grupo {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-
-	@Column(unique = true)
 	private String codigo;
-
-	private String ciclo;
 
 	private int curso;
 
-	/* Diurno o Vespertino */
-	private String modalidad;
+	@ManyToOne
+	private Ciclo ciclo;
+
+	@ManyToOne
+	private Profesor coordinador;
 
 	private String yearAcademico;
 
 	@OneToMany(mappedBy = "grupo")
 	private List<Alumno> alumnos = new ArrayList<>();
 
-	@OneToMany(mappedBy = "grupo", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Modulo> modulos = new ArrayList<>();
+	@OneToMany(mappedBy = "grupo")
+	private List<ModuloGrupo> modulos;
 
 	public Grupo() {
 	}
 
-	public Grupo(String codigo, String ciclo, int curso, String modalidad, String yearAcademico) {
-		super();
+	public Grupo(String codigo, int curso, Ciclo ciclo) {
 		this.codigo = codigo;
-		this.ciclo = ciclo;
 		this.curso = curso;
-		this.modalidad = modalidad;
-		this.yearAcademico = yearAcademico;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
+		this.ciclo = ciclo;
 	}
 
 	public String getCodigo() {
@@ -64,14 +47,6 @@ public class Grupo {
 		this.codigo = codigo;
 	}
 
-	public String getCiclo() {
-		return ciclo;
-	}
-
-	public void setCiclo(String ciclo) {
-		this.ciclo = ciclo;
-	}
-
 	public int getCurso() {
 		return curso;
 	}
@@ -80,12 +55,20 @@ public class Grupo {
 		this.curso = curso;
 	}
 
-	public String getModalidad() {
-		return modalidad;
+	public Ciclo getCiclo() {
+		return ciclo;
 	}
 
-	public void setModalidad(String modalidad) {
-		this.modalidad = modalidad;
+	public void setCiclo(Ciclo ciclo) {
+		this.ciclo = ciclo;
+	}
+
+	public Profesor getCoordinador() {
+		return coordinador;
+	}
+
+	public void setCoordinador(Profesor coordinador) {
+		this.coordinador = coordinador;
 	}
 
 	public String getYearAcademico() {
@@ -104,11 +87,16 @@ public class Grupo {
 		this.alumnos = alumnos;
 	}
 
-	public List<Modulo> getModulos() {
+	public List<ModuloGrupo> getModulos() {
 		return modulos;
 	}
 
-	public void setModulos(List<Modulo> modulos) {
+	public void setModulos(List<ModuloGrupo> modulos) {
 		this.modulos = modulos;
+	}
+	
+	@Override
+	public String toString() {
+		return codigo;
 	}
 }

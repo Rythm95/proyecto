@@ -51,5 +51,9 @@ public class PersonaService {
 	public Persona findByNombre(String nombre) {
 		return repo.findByNombre(nombre); 
 	}
+	
+	public Persona findByEmail(String email) {
+		return repo.findByEmail(email); 
+	}
 
 }

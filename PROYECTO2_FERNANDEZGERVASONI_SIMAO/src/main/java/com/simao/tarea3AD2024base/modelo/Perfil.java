@@ -6,4 +6,6 @@
 */
 package com.simao.tarea3AD2024base.modelo;
 
-public enum Perfil { ADMIN, ALUMNADO, PROFESORADO, TUTOR }
+public enum Perfil {
+	ADMIN, ALUMNADO, PROFESORADO, TUTOR
+}

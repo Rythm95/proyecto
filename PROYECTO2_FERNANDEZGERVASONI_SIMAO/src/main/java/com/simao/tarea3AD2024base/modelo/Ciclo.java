@@ -2,25 +2,28 @@ package com.simao.tarea3AD2024base.modelo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Modulo {
+public class Ciclo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
-	private String nombre;
+	@Enumerated(EnumType.STRING)
+	private TipoCiclo tipo;
 
-	public Modulo() {
+	public Ciclo() {
 	}
 
-	public Modulo(String nombre) {
-		this.nombre = nombre;
+	public Ciclo(TipoCiclo tipo) {
+		this.tipo = tipo;
 	}
 
 	public Long getId() {
@@ -31,16 +34,16 @@ public class Modulo {
 		this.id = id;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public TipoCiclo getTipo() {
+		return tipo;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setTipo(TipoCiclo tipo) {
+		this.tipo = tipo;
 	}
 
 	@Override
 	public String toString() {
-		return nombre;
+		return tipo.toString();
 	}
 }

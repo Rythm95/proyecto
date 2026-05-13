@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -20,23 +19,26 @@ public class FormacionEmpresa {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "idAlumno")
+	@ManyToOne
 	private Alumno alumno;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "idEmpresa")
+	@ManyToOne
 	private Empresa empresa;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "idTutor")
-	private Tutor tutor;
+	@ManyToOne
+	private Profesor tutorCentro;
+
+	@ManyToOne
+	private Tutor tutorEmpresa;
 
 	private LocalDate fechaIni;
 
 	private LocalDate fechaFin;
+
+	private EstadoFE estado = EstadoFE.PENDIENTE;
 
 	private Double calificacion;
 
@@ -47,11 +49,14 @@ public class FormacionEmpresa {
 	public FormacionEmpresa() {
 	}
 
-	public FormacionEmpresa(Alumno alumno, Empresa empresa, Tutor tutor, LocalDate fechaInicio) {
+	public FormacionEmpresa(Alumno alumno, Empresa empresa, Profesor tutorCentro, Tutor tutorEmpresa,
+			LocalDate fechaIni, LocalDate fechaFin) {
 		this.alumno = alumno;
 		this.empresa = empresa;
-		this.tutor = tutor;
-		this.fechaIni = fechaInicio;
+		this.tutorCentro = tutorCentro;
+		this.tutorEmpresa = tutorEmpresa;
+		this.fechaIni = fechaIni;
+		this.fechaFin = fechaFin;
 	}
 
 	public Long getId() {
@@ -78,43 +83,59 @@ public class FormacionEmpresa {
 		this.empresa = empresa;
 	}
 
-	public Tutor getTutor() {
-		return tutor;
+	public Profesor getTutorCentro() {
+		return tutorCentro;
 	}
 
-	public void setTutor(Tutor tutor) {
-		this.tutor = tutor;
+	public void setTutorCentro(Profesor tutorCentro) {
+		this.tutorCentro = tutorCentro;
 	}
 
-	public LocalDate getFechaInicio() {
+	public Tutor getTutorEmpresa() {
+		return tutorEmpresa;
+	}
+
+	public void setTutorEmpresa(Tutor tutorEmpresa) {
+		this.tutorEmpresa = tutorEmpresa;
+	}
+
+	public LocalDate getFechaIni() {
 		return fechaIni;
 	}
 
-	public void setFechaInicio(LocalDate f) {
-		this.fechaIni = f;
+	public void setFechaIni(LocalDate fechaIni) {
+		this.fechaIni = fechaIni;
 	}
 
 	public LocalDate getFechaFin() {
 		return fechaFin;
 	}
 
-	public void setFechaFin(LocalDate f) {
-		this.fechaFin = f;
+	public void setFechaFin(LocalDate fechaFin) {
+		this.fechaFin = fechaFin;
 	}
 
-	public Double getNotaFinal() {
+	public EstadoFE getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoFE estado) {
+		this.estado = estado;
+	}
+
+	public Double getCalificacion() {
 		return calificacion;
 	}
 
-	public void setNotaFinal(Double notaFinal) {
-		this.calificacion = notaFinal;
+	public void setCalificacion(Double calificacion) {
+		this.calificacion = calificacion;
 	}
 
 	public List<Falta> getFaltas() {
 		return faltas;
 	}
 
-	public boolean isActiva() {
-		return fechaFin == null;
+	public void setFaltas(List<Falta> faltas) {
+		this.faltas = faltas;
 	}
 }

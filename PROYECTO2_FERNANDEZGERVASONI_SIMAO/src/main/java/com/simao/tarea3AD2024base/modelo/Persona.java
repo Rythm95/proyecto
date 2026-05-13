@@ -23,6 +23,7 @@ public abstract class Persona {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", updatable = false, nullable = false)
 	protected Long id;
 
 	@Column(unique = true, nullable = false)
