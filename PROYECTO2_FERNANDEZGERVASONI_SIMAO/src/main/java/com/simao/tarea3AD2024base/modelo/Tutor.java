@@ -31,4 +31,8 @@ public class Tutor extends Persona {
 		this.empresa = empresa;
 	}
 
+	@Override
+	public String toString() {
+		return nombre;
+	}
 }

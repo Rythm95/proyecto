@@ -12,6 +12,8 @@ import com.simao.tarea3AD2024base.modelo.Tutor;
 public interface TutorRepository extends JpaRepository<Tutor, Long> {
 
 	List<Tutor> findByNombre(String nombre);
+	
+	List<Tutor> findByNombreContainingIgnoreCase(String nombre);
 
 	@Query("SELECT t FROM Tutor t LEFT JOIN FETCH t.empresa")
 	List<Tutor> findAllWithEmpresa();

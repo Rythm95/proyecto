@@ -34,13 +34,16 @@ public class FormacionEmpresa {
 	@ManyToOne
 	private Tutor tutorEmpresa;
 
+	private Periodo periodo;
+
 	private LocalDate fechaIni;
 
 	private LocalDate fechaFin;
 
 	private EstadoFE estado = EstadoFE.PENDIENTE;
 
-	private Double calificacion;
+	@OneToMany(mappedBy = "formacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<EvaluacionRa> evaluaciones = new ArrayList<>();
 
 	@OneToMany(mappedBy = "asignacion", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("fecha ASC")
@@ -49,12 +52,13 @@ public class FormacionEmpresa {
 	public FormacionEmpresa() {
 	}
 
-	public FormacionEmpresa(Alumno alumno, Empresa empresa, Profesor tutorCentro, Tutor tutorEmpresa,
+	public FormacionEmpresa(Alumno alumno, Empresa empresa, Profesor tutorCentro, Tutor tutorEmpresa, Periodo periodo,
 			LocalDate fechaIni, LocalDate fechaFin) {
 		this.alumno = alumno;
 		this.empresa = empresa;
 		this.tutorCentro = tutorCentro;
 		this.tutorEmpresa = tutorEmpresa;
+		this.periodo = periodo;
 		this.fechaIni = fechaIni;
 		this.fechaFin = fechaFin;
 	}
@@ -99,6 +103,14 @@ public class FormacionEmpresa {
 		this.tutorEmpresa = tutorEmpresa;
 	}
 
+	public Periodo getPeriodo() {
+		return periodo;
+	}
+
+	public void setPeriodo(Periodo periodo) {
+		this.periodo = periodo;
+	}
+
 	public LocalDate getFechaIni() {
 		return fechaIni;
 	}
@@ -123,12 +135,17 @@ public class FormacionEmpresa {
 		this.estado = estado;
 	}
 
-	public Double getCalificacion() {
-		return calificacion;
+	public List<EvaluacionRa> getEvaluaciones() {
+		return evaluaciones;
 	}
 
-	public void setCalificacion(Double calificacion) {
-		this.calificacion = calificacion;
+	public void setEvaluaciones(List<EvaluacionRa> evaluaciones) {
+		this.evaluaciones = evaluaciones;
+	}
+	
+	public void addEvaluacion(EvaluacionRa evaluacion) {
+	    evaluaciones.add(evaluacion);
+	    evaluacion.setFormacion(this);
 	}
 
 	public List<Falta> getFaltas() {
@@ -138,4 +155,11 @@ public class FormacionEmpresa {
 	public void setFaltas(List<Falta> faltas) {
 		this.faltas = faltas;
 	}
+
+	@Override
+	public String toString() {
+		return alumno.getNombre();
+	}
+	
+	
 }

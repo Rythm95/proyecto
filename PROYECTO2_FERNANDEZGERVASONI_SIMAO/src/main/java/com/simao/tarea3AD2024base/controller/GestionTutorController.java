@@ -8,19 +8,18 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.simao.tarea3AD2024base.config.StageManager;
-import com.simao.tarea3AD2024base.modelo.Alumno;
-import com.simao.tarea3AD2024base.modelo.Curso;
+import com.simao.tarea3AD2024base.modelo.Empresa;
 import com.simao.tarea3AD2024base.modelo.Perfil;
 import com.simao.tarea3AD2024base.modelo.Persona;
-import com.simao.tarea3AD2024base.services.AlumnoService;
-import com.simao.tarea3AD2024base.services.CursoService;
-import com.simao.tarea3AD2024base.services.FormacionEmpresaService;
+import com.simao.tarea3AD2024base.modelo.Tutor;
+import com.simao.tarea3AD2024base.services.EmpresaService;
 import com.simao.tarea3AD2024base.services.Hasher;
 import com.simao.tarea3AD2024base.services.PersonaService;
-import com.simao.tarea3AD2024base.services.Session;
+import com.simao.tarea3AD2024base.services.TutorService;
 import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -31,7 +30,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -41,7 +39,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
 @Controller
-public class GestionAlumnoController implements Initializable {
+public class GestionTutorController implements Initializable {
 
 	private PseudoClass EMPTY = PseudoClass.getPseudoClass("error");
 
@@ -53,16 +51,15 @@ public class GestionAlumnoController implements Initializable {
 	private PersonaService peService;
 
 	@Autowired
-	private AlumnoService alService;
+	private TutorService tuService;
 
 	@Autowired
-	private CursoService cuService;
-	
-	@Autowired
-	private FormacionEmpresaService feService;
+	private EmpresaService emService;
 
-	@Autowired
-	private Session session;
+	@EventListener
+	public void onNewEmpresa(NewEmpresaEvent event) {
+		cargarEmpresas();
+	}
 
 	@Autowired
 	private ApplicationEventPublisher evPublisher;
@@ -92,10 +89,7 @@ public class GestionAlumnoController implements Initializable {
 	private Label lblEmailError;
 
 	@FXML
-	private ComboBox<Curso> cbCursos;
-
-	@FXML
-	private CheckBox checkEdad;
+	private ComboBox<Empresa> cbEmpresas;
 
 	@FXML
 	private TextField txtUsername;
@@ -110,7 +104,7 @@ public class GestionAlumnoController implements Initializable {
 	private Label lblPasswordError;
 
 	@FXML
-	private ComboBox<Alumno> cbEditarAlumno;
+	private ComboBox<Tutor> cbEditarTutor;
 
 	@FXML
 	private TextField txtEditNombre;
@@ -125,10 +119,7 @@ public class GestionAlumnoController implements Initializable {
 	private Label lblEditEmailError;
 
 	@FXML
-	private ComboBox<Curso> cbEditCursos;
-
-	@FXML
-	private CheckBox checkEditEdad;
+	private ComboBox<Empresa> cbEditEmpresas;
 
 	@FXML
 	private TextField txtEditUsername;
@@ -152,68 +143,47 @@ public class GestionAlumnoController implements Initializable {
 	private Button btnEditar;
 
 	@FXML
-	private TableView<Alumno> tablaAlumnos;
+	private TableView<Tutor> tablaTutores;
 
 	@FXML
-	private TableColumn<Alumno, String> colNombre;
+	private TableColumn<Tutor, String> colNombre;
 
 	@FXML
-	private TableColumn<Alumno, String> colEmail;
+	private TableColumn<Tutor, String> colEmail;
 
 	@FXML
-	private TableColumn<Alumno, String> colCurso;
-
-	@FXML
-	private TableColumn<Alumno, String> colEdad;
+	private TableColumn<Tutor, String> colEmpresa;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		if (session.getPerfil() == Perfil.TUTOR) {
-			btnNuevo.setVisible(false);
-			btnNuevo.setManaged(false);
-			btnBuscar.setVisible(false);
-			btnBuscar.setManaged(false);
-			btnEditar.setVisible(false);
-			btnEditar.setManaged(false);
-		} else {
-			cbEditarAlumno.getSelectionModel().selectedItemProperty().addListener((_, _, alumno) -> {
-				cargarEditar(alumno);
-			});
+		cbEditarTutor.getSelectionModel().selectedItemProperty().addListener((_, _, tutor) -> {
+			cargarEditar(tutor);
+		});
 
-			cargarCursos();
-		}
-
-		cargarAlumnos();
-
+		cargarTutores();
+		cargarEmpresas();
 	}
 
-	private void cargarAlumnos() {
-		List<Alumno> alumnos;
-		
-		if (session.getPerfil() == Perfil.TUTOR)
-			alumnos = feService.getAlumnosByTutor(session.getUserId());
-		else
-			alumnos = alService.findAll();
-		
-		ObservableList<Alumno> datos = FXCollections.observableArrayList(alumnos);
+	private void cargarTutores() {
+		List<Tutor> tutores = tuService.findAll();
+		ObservableList<Tutor> datos = FXCollections.observableArrayList(tutores);
 
 		colNombre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
 		colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
-		colCurso.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCurso().getNombre()));
-		colEdad.setCellValueFactory(
-				data -> new SimpleStringProperty(data.getValue().isMayoriaEdad() ? "Mayor de edad" : "Menor de edad"));
+		colEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmpresa().getNombre()));
 
-		if (!alumnos.isEmpty()) {
-			tablaAlumnos.setItems(datos);
-			cbEditarAlumno.setItems(datos);
+		if (!tutores.isEmpty()) {
+			tablaTutores.setItems(datos);
+			cbEditarTutor.setItems(datos);
 		}
 	}
 
-	private void cargarCursos() {
-		List<Curso> cursos = cuService.findAll();
-		ObservableList<Curso> datos = FXCollections.observableArrayList(cursos);
-		cbCursos.setItems(datos);
-		cbEditCursos.setItems(datos);
+	private void cargarEmpresas() {
+		List<Empresa> empresas = emService.findAll();
+		cbEmpresas.setItems(emService.getObservableEmpresas());
+		ObservableList<Empresa> datos = FXCollections.observableArrayList(empresas);
+		cbEmpresas.setItems(datos);
+		cbEditEmpresas.setItems(datos);
 	}
 
 	@FXML
@@ -272,85 +242,82 @@ public class GestionAlumnoController implements Initializable {
 	private void buscar() {
 		String txt = txtBuscador.getText().trim();
 		if (txt.isEmpty()) {
-			cargarAlumnos();
+			cargarTutores();
 		} else {
-			tablaAlumnos.setItems(FXCollections.observableArrayList(alService.findByNombre(txt)));
+			tablaTutores.setItems(FXCollections.observableArrayList(tuService.findByNombre(txt)));
 		}
 	}
 
 	@FXML
 	private void guardar() {
-		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbCursos, txtUsername, lblUsernameError,
+		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbEmpresas, txtUsername, lblUsernameError,
 				txtPassword, lblPasswordError, false))
 			return;
 
-		Alumno alumno = new Alumno();
+		Tutor tutor = new Tutor();
 
-		alumno.setNombre(txtNombre.getText());
-		alumno.setEmail(txtEmail.getText());
+		tutor.setNombre(txtNombre.getText());
+		tutor.setEmail(txtEmail.getText());
 
-		alumno.setCurso(cbCursos.getValue());
-		alumno.setMayoriaEdad(checkEdad.isSelected());
+		tutor.setEmpresa(cbEmpresas.getValue());
 
-		alumno.setUser(txtUsername.getText());
-		alumno.setPassword(Hasher.md5(txtPassword.getText()));
-		alumno.setPerfil(Perfil.ALUMNADO);
+		tutor.setUser(txtUsername.getText());
+		tutor.setPassword(Hasher.md5(txtPassword.getText()));
+		tutor.setPerfil(Perfil.TUTOR);
 
-		peService.save(alumno);
+		peService.save(tutor);
 
 		switchBuscar();
-		cargarAlumnos();
-		limpiarForm(txtNombre, txtEmail, cbCursos, txtUsername, txtPassword);
+		cargarTutores();
+		limpiarForm(txtNombre, txtEmail, cbEmpresas, txtUsername, txtPassword);
 
-		evPublisher.publishEvent(new NewAlumnoEvent(alumno));
+		evPublisher.publishEvent(new NewTutorEvent(tutor));
 	}
 
-	private void cargarEditar(Alumno alumno) {
-		if (alumno != null) {
-			txtEditNombre.setText(alumno.getNombre());
-			txtEditEmail.setText(alumno.getEmail());
+	private void cargarEditar(Tutor tutor) {
+		if (tutor != null) {
+			txtEditNombre.setText(tutor.getNombre());
+			txtEditEmail.setText(tutor.getEmail());
 
-			cbEditCursos.setValue(alumno.getCurso());
-			checkEditEdad.setSelected(alumno.isMayoriaEdad());
+			cbEditEmpresas.setValue(tutor.getEmpresa());
 
-			txtEditUsername.setText(alumno.getUser());
+			txtEditUsername.setText(tutor.getUser());
 		}
 	}
 
 	private void editar() {
-		Alumno alumno = cbEditarAlumno.getValue();
-		if (alumno == null)
+		Tutor tutor = cbEditarTutor.getValue();
+		if (tutor == null)
 			return;
 
-		if (validar(txtEditNombre, lblEditNombreError, txtEditEmail, lblEditEmailError, cbEditCursos, txtEditUsername,
+		if (validar(txtEditNombre, lblEditNombreError, txtEditEmail, lblEditEmailError, cbEditEmpresas, txtEditUsername,
 				lblEditUsernameError, txtEditPassword, lblEditPasswordError, true))
 			return;
 
-		alumno.setNombre(txtEditNombre.getText());
-		alumno.setEmail(txtEditEmail.getText());
+		tutor.setNombre(txtEditNombre.getText());
+		tutor.setEmail(txtEditEmail.getText());
 
-		alumno.setCurso(cbEditCursos.getValue());
-		alumno.setMayoriaEdad(checkEditEdad.isSelected());
+		tutor.setEmpresa(cbEditEmpresas.getValue());
 
-		alumno.setUser(txtEditUsername.getText());
-		alumno.setPassword(Hasher.md5(txtEditPassword.getText()));
+		tutor.setUser(txtEditUsername.getText());
+		tutor.setPassword(Hasher.md5(txtEditPassword.getText()));
 
-		alService.update(alumno);
+		tuService.update(tutor);
 
 		switchBuscar();
-		cargarAlumnos();
-		limpiarForm(txtEditNombre, txtEditEmail, cbEditCursos, txtEditUsername, txtEditPassword);
+		cargarTutores();
+		limpiarForm(txtEditNombre, txtEditEmail, cbEditEmpresas, txtEditUsername, txtEditPassword);
 
-		evPublisher.publishEvent(new NewAlumnoEvent(alumno));
+		evPublisher.publishEvent(new NewTutorEvent(tutor));
 	}
 
 	private boolean validar(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
-			ComboBox<Curso> cbCur, TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword,
+			ComboBox<Empresa> cbEmp, TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword,
 			boolean edit) {
 
-		Persona alEmail = peService.findByEmail(tfEmail.getText());
-		Persona alUser = peService.findByUser(tfUser.getText());
-		Persona alEdit = edit ? cbEditarAlumno.getValue() : null;
+		Persona tuEmail = peService.findByEmail(tfEmail.getText());
+		Persona tuUser = peService.findByUser(tfUser.getText());
+		Persona tuEdit = edit ? cbEditarTutor.getValue() : null;
 
 		String txtNombre = tfNombre.getText();
 		boolean nombre = txtNombre.isEmpty();
@@ -378,7 +345,7 @@ public class GestionAlumnoController implements Initializable {
 			if (!Pattern.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$", txtEmail)) {
 				email = true;
 				lblEmail.setText("El email no es válido.");
-			} else if (alEmail != null && (alEdit == null || !alEmail.getId().equals(alEdit.getId()))) {
+			} else if (tuEmail != null && (tuEdit == null || !tuEmail.getId().equals(tuEdit.getId()))) {
 				email = true;
 				lblEmail.setText("Este correo ya está registrado en la base de datos.");
 			}
@@ -391,8 +358,8 @@ public class GestionAlumnoController implements Initializable {
 			lblEmail.setVisible(false);
 		}
 
-		boolean curso = cbCur.getValue() == null;
-		cbCur.pseudoClassStateChanged(EMPTY, curso);
+		boolean empresa = cbEmp.getValue() == null;
+		cbEmp.pseudoClassStateChanged(EMPTY, empresa);
 
 		String txtUsername = tfUser.getText();
 		boolean username = txtUsername.isEmpty();
@@ -409,7 +376,7 @@ public class GestionAlumnoController implements Initializable {
 				username = true;
 				lblUser.setText(
 						"El nombre de usuario no debe contener números ni letras mayúsculas o con tíldes o dieresis.");
-			} else if (alUser != null && (alEdit == null || !alUser.getId().equals(alEdit.getId()))) {
+			} else if (tuUser != null && (tuEdit == null || !tuUser.getId().equals(tuEdit.getId()))) {
 				username = true;
 				lblUser.setText("Este nombre de usuario ya está registrado en la base de datos.");
 			}
@@ -442,15 +409,15 @@ public class GestionAlumnoController implements Initializable {
 			lblPassword.setVisible(false);
 		}
 
-		return nombre || email || curso || username || password;
+		return nombre || email || empresa || username || password;
 	}
 
-	private void limpiarForm(TextField tfNombre, TextField tfEmail, ComboBox<Curso> cbCur, TextField tfUser,
+	private void limpiarForm(TextField tfNombre, TextField tfEmail, ComboBox<Empresa> cbEmp, TextField tfUser,
 			PasswordField tfPassword) {
 		tfNombre.clear();
 		tfEmail.clear();
-		cbCur.getSelectionModel().clearSelection();
-		cbCur.setValue(null);
+		cbEmp.getSelectionModel().clearSelection();
+		cbEmp.setValue(null);
 		tfUser.clear();
 		tfPassword.clear();
 	}

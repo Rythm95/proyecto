@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -226,6 +227,95 @@
 					</TableView>
 				</VBox>
 			</Tab>
+			<Tab text="Resultados de Aprendizaje">
+				<VBox spacing="15" styleClass="card">
+					<padding>
+						<Insets bottom="15" left="15" right="15" top="15" />
+					</padding>
+					<HBox spacing="10">
+						<HBox fx:id="boxBuscarRA" spacing="10.0" HBox.hgrow="ALWAYS">
+							<children>
+								<TextField fx:id="txtBuscadorRA" onAction="#buscarRA"
+									promptText="Buscar RA..." HBox.hgrow="ALWAYS" />
+							</children>
+						</HBox>
+						<HBox fx:id="boxCreacionRA" managed="false" spacing="10.0"
+							visible="false" HBox.hgrow="ALWAYS">
+							<children>
+								<VBox spacing="10.0" HBox.hgrow="ALWAYS">
+									<children>
+										<ComboBox fx:id="cbModuloRA" prefWidth="250"
+											promptText="Módulo al que pertenece este RA" />
+										<TextField fx:id="txtNombreRA"
+											promptText="Nombre del RA..." />
+										<Label fx:id="lblNombreRAError" managed="false"
+											styleClass="error-label" text="" visible="false" />
+										<TextArea fx:id="txtDescRA" promptText="Descripción" />
+										<HBox spacing="10">
+											<children>
+												<Button onAction="#switchNuevoRA"
+													styleClass="btn-primary" text="Guardar Cambios" />
+												<Button onAction="#switchBuscarRA"
+													styleClass="btn-secondary" text="Cancelar" />
+											</children>
+										</HBox>
+									</children>
+								</VBox>
+							</children>
+						</HBox>
+						<HBox fx:id="boxEdicionRA" managed="false" spacing="10.0"
+							visible="false" HBox.hgrow="ALWAYS">
+							<children>
+								<VBox spacing="10.0" HBox.hgrow="ALWAYS">
+									<children>
+										<ComboBox fx:id="cbRAEdit" prefWidth="200"
+											promptText="Selecciona RA" />
+										<ComboBox fx:id="cbModuloRAEdit"
+											promptText="Módulo al que pertenece este RA" />
+										<Label fx:id="lblModuloRAEditError" managed="false"
+											styleClass="error-label" text="" visible="false" />
+										<TextField fx:id="txtNombreRAEdit"
+											promptText="Nombre del RA..." />
+										<Label fx:id="lblNombreRAEditError" managed="false"
+											styleClass="error-label" text="" visible="false" />
+										<TextArea fx:id="txtDescRAEdit"
+											promptText="Descripción" />
+										<Label fx:id="lblDescRAEditError" managed="false"
+											styleClass="error-label" text="" visible="false" />
+										<HBox spacing="10">
+											<children>
+												<Button onAction="#switchEditarRA"
+													styleClass="btn-primary" text="Guardar Cambios" />
+												<Button onAction="#switchBuscarRA"
+													styleClass="btn-secondary" text="Cancelar" />
+											</children>
+										</HBox>
+									</children>
+								</VBox>
+							</children>
+						</HBox>
+						<Button fx:id="btnBuscarRA" onAction="#switchBuscarRA"
+							styleClass="btn-primary" text="Buscar" />
+						<Button fx:id="btnNuevoRA" onAction="#switchNuevoRA"
+							styleClass="btn-secondary" text="Nuevo" />
+						<Button fx:id="btnEditarRA" onAction="#switchEditarRA"
+							styleClass="btn-secondary" text="Editar" />
+					</HBox>
+					<TableView fx:id="tablaRAs" VBox.vgrow="ALWAYS">
+						<columns>
+							<TableColumn fx:id="colCodigoRA" prefWidth="250"
+								text="Código" />
+							<TableColumn fx:id="colDescripcionRA" prefWidth="150"
+								text="Descripción" />
+							<TableColumn fx:id="colModuloRA" prefWidth="250"
+								text="Módulo" />
+						</columns>
+						<placeholder>
+							<Label text="No hay resultados de aprendizaje registrados." />
+						</placeholder>
+					</TableView>
+				</VBox>
+			</Tab>
 			<Tab text="Alumnos">
 				<content>
 					<fx:include source="GestionAlumno.fxml" />
@@ -234,6 +324,16 @@
 			<Tab text="Empresas">
 				<content>
 					<fx:include source="GestionEmpresa.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Tutores">
+				<content>
+					<fx:include source="GestionTutor.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Formaciones">
+				<content>
+					<fx:include source="GestionFormacion.fxml" />
 				</content>
 			</Tab>
 		</TabPane>

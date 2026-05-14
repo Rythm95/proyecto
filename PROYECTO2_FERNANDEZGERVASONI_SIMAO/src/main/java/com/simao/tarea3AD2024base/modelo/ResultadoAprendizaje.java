@@ -62,4 +62,9 @@ public class ResultadoAprendizaje {
 	public void setModulo(Modulo modulo) {
 		this.modulo = modulo;
 	}
+	
+	@Override
+	public String toString() {
+		return codigo;
+	}
 }

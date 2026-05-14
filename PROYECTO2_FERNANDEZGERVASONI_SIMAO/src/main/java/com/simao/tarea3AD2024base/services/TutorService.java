@@ -34,7 +34,9 @@ public class TutorService {
 		return repo.findAllWithEmpresa();
 	}
 
-	public List<Tutor> findByName(String nombre) {
-		return repo.findByNombre(nombre);
+	public List<Tutor> findByNombre(String nombre) {
+		return repo.findByNombreContainingIgnoreCase(nombre);
 	}
+	
+	
 }

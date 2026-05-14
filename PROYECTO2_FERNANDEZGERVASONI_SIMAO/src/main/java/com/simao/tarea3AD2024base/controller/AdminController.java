@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
@@ -16,12 +17,14 @@ import com.simao.tarea3AD2024base.modelo.ModuloCurso;
 import com.simao.tarea3AD2024base.modelo.Perfil;
 import com.simao.tarea3AD2024base.modelo.Persona;
 import com.simao.tarea3AD2024base.modelo.Profesor;
+import com.simao.tarea3AD2024base.modelo.ResultadoAprendizaje;
 import com.simao.tarea3AD2024base.services.CursoService;
 import com.simao.tarea3AD2024base.services.Hasher;
 import com.simao.tarea3AD2024base.services.ModuloCursoService;
 import com.simao.tarea3AD2024base.services.ModuloService;
 import com.simao.tarea3AD2024base.services.PersonaService;
 import com.simao.tarea3AD2024base.services.ProfesorService;
+import com.simao.tarea3AD2024base.services.ResultadoAprendizajeService;
 import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -37,6 +40,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
@@ -63,6 +67,12 @@ public class AdminController implements Initializable {
 
 	@Autowired
 	private ModuloCursoService mcService;
+
+	@Autowired
+	private ResultadoAprendizajeService raService;
+	
+	@Autowired
+	private ApplicationEventPublisher evPublisher;
 
 	@FXML
 	private TableView<Profesor> tablaProfes;
@@ -214,15 +224,86 @@ public class AdminController implements Initializable {
 	@FXML
 	private TableColumn<Modulo, String> colProfesorModulo;
 
+	@FXML
+	private HBox boxBuscarRA;
+
+	@FXML
+	private TextField txtBuscadorRA;
+
+	@FXML
+	private HBox boxCreacionRA;
+
+	@FXML
+	private ComboBox<Modulo> cbModuloRA;
+
+	@FXML
+	private TextField txtNombreRA;
+
+	@FXML
+	private Label lblNombreRAError;
+
+	@FXML
+	private TextArea txtDescRA;
+
+	@FXML
+	private HBox boxEdicionRA;
+
+	@FXML
+	private ComboBox<ResultadoAprendizaje> cbRAEdit;
+
+	@FXML
+	private ComboBox<Modulo> cbModuloRAEdit;
+
+	@FXML
+	private Label lblModuloRAEditError;
+
+	@FXML
+	private TextField txtNombreRAEdit;
+
+	@FXML
+	private Label lblNombreRAEditError;
+
+	@FXML
+	private TextArea txtDescRAEdit;
+
+	@FXML
+	private Label lblDescRAEditError;
+
+	@FXML
+	private Button btnBuscarRA;
+
+	@FXML
+	private Button btnNuevoRA;
+
+	@FXML
+	private Button btnEditarRA;
+
+	@FXML
+	private TableView<ResultadoAprendizaje> tablaRAs;
+
+	@FXML
+	private TableColumn<ResultadoAprendizaje, String> colCodigoRA;
+
+	@FXML
+	private TableColumn<ResultadoAprendizaje, String> colDescripcionRA;
+
+	@FXML
+	private TableColumn<ResultadoAprendizaje, String> colModuloRA;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		cbProfeEditar.getSelectionModel().selectedItemProperty().addListener((_, _, profe) -> {
 			cargarProfeEditar(profe);
 		});
 
+		cbRAEdit.getSelectionModel().selectedItemProperty().addListener((_, _, ra) -> {
+			cargarRAEditar(ra);
+		});
+
 		cargarCursos();
 		cargarProfes();
 		cargarModulos();
+		cargarRAs();
 	}
 
 	private void cargarProfes() {
@@ -268,11 +349,12 @@ public class AdminController implements Initializable {
 	private void cargarModulos() {
 
 		List<Modulo> modulos = moService.findAll();
-
 		ObservableList<Modulo> datos = FXCollections.observableArrayList(modulos);
 
 		tablaModulos.setItems(datos);
 		cbModuloEditar.setItems(datos);
+		cbModuloRA.setItems(datos);
+		cbModuloRAEdit.setItems(datos);
 		colModulo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
 		colCursoModulo.setCellValueFactory(data -> {
 
@@ -291,6 +373,17 @@ public class AdminController implements Initializable {
 
 			return new SimpleStringProperty(prof);
 		});
+	}
+
+	private void cargarRAs() {
+		List<ResultadoAprendizaje> ras = raService.findAll();
+		ObservableList<ResultadoAprendizaje> datos = FXCollections.observableArrayList(ras);
+
+		cbRAEdit.setItems(datos);
+		tablaRAs.setItems(datos);
+		colCodigoRA.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCodigo()));
+		colDescripcionRA.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescripcion()));
+		colModuloRA.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getModulo().getNombre()));
 	}
 
 	@FXML
@@ -353,6 +446,36 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	@FXML
+	private void switchBuscarRA() {
+		if (!boxBuscarRA.isVisible()) {
+			switchBox(boxBuscarRA, boxEdicionRA, boxCreacionRA);
+			switchButton(btnBuscarRA, btnEditarRA, btnNuevoRA);
+		} else {
+			buscarRA();
+		}
+	}
+
+	@FXML
+	private void switchNuevoRA() {
+		if (!boxCreacionRA.isVisible()) {
+			switchBox(boxCreacionRA, boxEdicionRA, boxBuscarRA);
+			switchButton(btnNuevoRA, btnEditarRA, btnBuscarRA);
+		} else {
+			guardarRA();
+		}
+	}
+
+	@FXML
+	private void switchEditarRA() {
+		if (!boxEdicionRA.isVisible()) {
+			switchBox(boxEdicionRA, boxBuscarRA, boxCreacionRA);
+			switchButton(btnEditarRA, btnBuscarRA, btnNuevoRA);
+		} else {
+			editarRA();
+		}
+	}
+
 	private void switchButton(Button activo, Button... inactivos) {
 
 		activo.getStyleClass().removeAll("btn-secondary", "btn-primary");
@@ -386,6 +509,16 @@ public class AdminController implements Initializable {
 	}
 
 	@FXML
+	private void buscarRA() {
+		String texto = txtBuscadorRA.getText().trim();
+		if (texto.isEmpty()) {
+			cargarRAs();
+		} else {
+			tablaRAs.setItems(FXCollections.observableArrayList(raService.findByNombreParcial(texto)));
+		}
+	}
+
+	@FXML
 	private void guardarProfe() {
 
 		if (validarProfe(txtNombreProfe, lblNombreProfeError, txtEmailProfe, lblEmailProfeError, txtUsernameProfe,
@@ -405,6 +538,46 @@ public class AdminController implements Initializable {
 		switchBuscarProfe();
 		cargarProfes();
 		limpiarForm(txtNombreProfe, txtEmailProfe, txtUsernameProfe, txtPasswordProfe);
+		
+		evPublisher.publishEvent(new NewProfesorEvent(profe));
+	}
+
+	@FXML
+	private void guardarRA() {
+
+		if (validarRA(txtNombreRA, lblNombreRAError, txtDescRA, cbModuloRA, false))
+			return;
+
+		ResultadoAprendizaje ra = new ResultadoAprendizaje();
+
+		ra.setCodigo(txtNombreRA.getText());
+		ra.setDescripcion(txtDescRA.getText());
+		ra.setModulo(cbModuloRA.getValue());
+
+		raService.save(ra);
+
+		switchBuscarRA();
+		cargarRAs();
+		limpiarFormRA(txtNombreRA, txtDescRA, cbModuloRA);
+	}
+
+	private void editarRA() {
+		ResultadoAprendizaje ra = cbRAEdit.getValue();
+		if (ra == null)
+			return;
+
+		if (validarRA(txtNombreRAEdit, lblNombreRAEditError, txtDescRAEdit, cbModuloRAEdit, true))
+			return;
+
+		ra.setCodigo(txtNombreRAEdit.getText());
+		ra.setDescripcion(txtDescRAEdit.getText());
+		ra.setModulo(cbModuloRAEdit.getValue());
+
+		raService.update(ra);
+
+		switchBuscarRA();
+		cargarRAs();
+		limpiarFormRA(txtNombreRAEdit, txtDescRAEdit, cbModuloRAEdit);
 	}
 
 	private void cargarProfeEditar(Profesor profe) {
@@ -412,7 +585,14 @@ public class AdminController implements Initializable {
 			txtEditNombreProfe.setText(profe.getNombre());
 			txtEditEmailProfe.setText(profe.getEmail());
 			txtEditUsernameProfe.setText(profe.getUser());
-			txtEditPasswordProfe.setText(profe.getPassword());
+		}
+	}
+
+	private void cargarRAEditar(ResultadoAprendizaje ra) {
+		if (ra != null) {
+			txtNombreRAEdit.setText(ra.getCodigo());
+			txtDescRAEdit.setText(ra.getDescripcion());
+			cbModuloRAEdit.setValue(ra.getModulo());
 		}
 	}
 
@@ -435,6 +615,8 @@ public class AdminController implements Initializable {
 		switchBuscarProfe();
 		cargarProfes();
 		limpiarForm(txtEditNombreProfe, txtEditEmailProfe, txtEditUsernameProfe, txtEditPasswordProfe);
+		
+		evPublisher.publishEvent(new NewProfesorEvent(profe));
 	}
 
 	private boolean validarProfe(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
@@ -532,6 +714,38 @@ public class AdminController implements Initializable {
 		}
 
 		return nombre || email || username || password;
+	}
+
+	private boolean validarRA(TextField tfCodigo, Label lblCodigo, TextArea tfDesc, ComboBox<Modulo> cbModulo,
+			boolean edit) {
+
+		ResultadoAprendizaje raCodigo = raService.findByCodigo(tfCodigo.getText());
+		ResultadoAprendizaje raEdit = edit ? cbRAEdit.getValue() : null;
+
+		boolean codigo = tfCodigo.getText().isEmpty();
+		tfCodigo.pseudoClassStateChanged(EMPTY, codigo);
+
+		if (!codigo) {
+			if (raCodigo != null && (raEdit == null || !raCodigo.getId().equals(raEdit.getId()))) {
+				codigo = true;
+				lblCodigo.setText("Este código ya pertenece a otro RA.");
+			}
+
+			lblCodigo.setManaged(codigo);
+			lblCodigo.setVisible(codigo);
+
+		} else {
+			lblCodigo.setManaged(false);
+			lblCodigo.setVisible(false);
+		}
+
+		boolean desc = tfDesc.getText().isEmpty();
+		tfDesc.pseudoClassStateChanged(EMPTY, desc);
+
+		boolean modulo = cbModulo.getValue() == null;
+		cbModulo.pseudoClassStateChanged(EMPTY, modulo);
+
+		return codigo || desc || modulo;
 	}
 
 	@FXML
@@ -653,6 +867,13 @@ public class AdminController implements Initializable {
 		tfEmail.clear();
 		tfUser.clear();
 		tfPassword.clear();
+	}
+
+	private void limpiarFormRA(TextField tfCodigo, TextArea tfDesc, ComboBox<Modulo> cbModulo) {
+		tfCodigo.clear();
+		tfDesc.clear();
+		cbModulo.getSelectionModel().clearSelection();
+		cbModulo.setValue(null);
 	}
 
 	public void logout(ActionEvent event) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
@@ -39,6 +40,9 @@ public class GestionEmpresaController implements Initializable {
 
 	@Autowired
 	private EmpresaService emService;
+	
+	@Autowired
+	private ApplicationEventPublisher evPublisher;
 
 	@FXML
 	private HBox boxBuscar;
@@ -188,6 +192,8 @@ public class GestionEmpresaController implements Initializable {
 
 		switchBuscar();
 		cargarEmpresas();
+		
+		evPublisher.publishEvent(new NewEmpresaEvent(empresa));
 	}
 
 	private void cargarEditar(Empresa empresa) {
@@ -212,6 +218,8 @@ public class GestionEmpresaController implements Initializable {
 
 		switchBuscar();
 		cargarEmpresas();
+		
+		evPublisher.publishEvent(new NewEmpresaEvent(empresa));
 	}
 
 	private boolean validar(TextField tfNombre, Label lblNombre, TextField tfDireccion, boolean edit) {

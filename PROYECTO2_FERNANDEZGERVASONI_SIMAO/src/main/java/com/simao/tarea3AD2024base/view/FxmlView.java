@@ -17,12 +17,12 @@ public enum FxmlView {
 	ALUMNADO {
 		@Override
 		public String getTitle() {
-			return getStringFromResourceBundle("estudiante.title");
+			return getStringFromResourceBundle("alumnado.title");
 		}
 
 		@Override
 		public String getFxmlFile() {
-			return "/fxml/Estudiante.fxml";
+			return "/fxml/Alumno.fxml";
 		}
 	},
 	PROFESORADO {

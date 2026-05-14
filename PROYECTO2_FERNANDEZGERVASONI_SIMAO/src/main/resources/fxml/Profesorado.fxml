@@ -5,88 +5,51 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="1000.0" styleClass="root" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.simao.tarea3AD2024base.controller.ProfesoradoController">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
-            <padding>
-                <Insets bottom="10" left="20" right="20" top="10" />
-            </padding>
-            <Label styleClass="title" text="Profesorado" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Button styleClass="btn-primary" onAction="#logout" text="Cerrar Sesión" />
-        </HBox>
-    </top>
-    <center>
-        <TabPane tabClosingPolicy="UNAVAILABLE">
-            <Tab text="Estudiantes">
-                <VBox spacing="15" styleClass="card">
-                    <HBox spacing="10">
-                        <TextField promptText="Buscar estudiante..." HBox.hgrow="ALWAYS" />
-                        <Button styleClass="btn-primary" text="Nuevo" />
-                        <Button styleClass="btn-secondary" text="Eliminar" />
-                    </HBox>
-                    <TableView fx:id="tablaEstudiantes">
-                        <columns>
-                            <TableColumn fx:id="colNombre" text="Nombre" />
-                            <TableColumn fx:id="colEmail" text="Email" />
-                            <TableColumn fx:id="colGrupo" text="Grupo" />
-                        </columns>
-                    </TableView>
-                </VBox>
-            </Tab>
-            <Tab text="Empresas">
-                <VBox spacing="15" styleClass="card">
-                    <HBox spacing="10">
-                        <TextField promptText="Buscar empresa..." HBox.hgrow="ALWAYS" />
-                        <Button styleClass="btn-primary" text="Nueva" />
-                        <Button styleClass="btn-secondary" text="Eliminar" />
-                    </HBox>
-                    <TableView fx:id="tablaEmpresas">
-                        <columns>
-                            <TableColumn fx:id="colNombreEmpresa" text="Nombre" />
-                            <TableColumn fx:id="colDireccion" text="Dirección" />
-                        </columns>
-                    </TableView>
-                </VBox>
-            </Tab>
-            <Tab text="Tutores Empresa">
-                <VBox spacing="15" styleClass="card">
-                    <HBox spacing="10">
-                        <Button styleClass="btn-primary" text="Nuevo tutor" />
-                        <Button styleClass="btn-secondary" text="Eliminar" />
-                    </HBox>
-                    <TableView fx:id="tablaTutoresEmpresa">
-                        <columns>
-                            <TableColumn fx:id="colNombreTutor" text="Nombre" />
-                            <TableColumn fx:id="colEmpresaTutor" text="Empresa" />
-                        </columns>
-                    </TableView>
-                </VBox>
-            </Tab>
-            <Tab text="Formaciones">
-                <VBox spacing="15" styleClass="card">
-                    <HBox spacing="10">
-                        <Button styleClass="btn-primary" text="Asignar estudiante" />
-                        <Button styleClass="btn-secondary" text="Reasignar" />
-                    </HBox>
-                    <TableView fx:id="tablaFormaciones">
-                        <columns>
-                            <TableColumn fx:id="colEstudiante" text="Estudiante" />
-                            <TableColumn fx:id="colEmpresa" text="Empresa" />
-                            <TableColumn fx:id="colTutorEmpresa" text="Tutor Empresa" />
-                            <TableColumn fx:id="colPeriodo" text="Periodo" />
-                        </columns>
-                    </TableView>
-                </VBox>
-            </Tab>
-        </TabPane>
-    </center>
+<BorderPane prefHeight="600.0" prefWidth="1000.0"
+	styleClass="root" stylesheets="@../styles/Styles.css"
+	xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.simao.tarea3AD2024base.controller.ProfesoradoController">
+	<top>
+		<HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
+			<padding>
+				<Insets bottom="10" left="20" right="20" top="10" />
+			</padding>
+			<Label styleClass="title" text="Profesorado" />
+			<HBox prefHeight="0.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+			<Button onAction="#logout" styleClass="btn-primary"
+				text="Cerrar Sesión" />
+		</HBox>
+	</top>
+	<center>
+		<TabPane tabClosingPolicy="UNAVAILABLE">
+			<Tab text="Alumnos">
+				<content>
+					<fx:include source="GestionAlumno.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Empresas">
+				<content>
+					<fx:include source="GestionEmpresa.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Tutores">
+				<content>
+					<fx:include source="GestionTutor.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Formaciones">
+				<content>
+					<fx:include source="GestionFormacion.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Datos Propios">
+				<content>
+					<fx:include source="GestionDatosPropios.fxml" />
+				</content>
+			</Tab>
+		</TabPane>
+	</center>
 </BorderPane>

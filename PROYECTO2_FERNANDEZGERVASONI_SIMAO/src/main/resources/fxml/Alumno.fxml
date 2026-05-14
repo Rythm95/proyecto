@@ -11,7 +11,7 @@
 <BorderPane prefHeight="600.0" prefWidth="1000.0"
 	styleClass="root" stylesheets="@../styles/Styles.css"
 	xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="com.simao.tarea3AD2024base.controller.TutorController">
+	fx:controller="com.simao.tarea3AD2024base.controller.AlumnoController">
 	<top>
 		<HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
 			<padding>
@@ -25,11 +25,6 @@
 	</top>
 	<center>
 		<TabPane tabClosingPolicy="UNAVAILABLE">
-			<Tab text="Alumnos">
-				<content>
-					<fx:include source="GestionAlumno.fxml" />
-				</content>
-			</Tab>
 			<Tab text="Formaciones">
 				<content>
 					<fx:include source="GestionFormacion.fxml" />

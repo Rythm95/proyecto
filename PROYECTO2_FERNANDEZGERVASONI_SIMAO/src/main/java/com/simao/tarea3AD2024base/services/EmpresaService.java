@@ -8,28 +8,45 @@ import org.springframework.stereotype.Service;
 import com.simao.tarea3AD2024base.modelo.Empresa;
 import com.simao.tarea3AD2024base.repositorios.EmpresaRepository;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 @Service
 public class EmpresaService {
 
 	@Autowired
 	private EmpresaRepository repo;
 
+	private ObservableList<Empresa> empresas = FXCollections.observableArrayList();
+
+	public ObservableList<Empresa> getObservableEmpresas() {
+		return empresas;
+	}
+
+	public void loadEmpresas() {
+		empresas.setAll(repo.findAll());
+	}
+
 	public Empresa save(Empresa empresa) {
-		return repo.save(empresa);
+		Empresa e = repo.save(empresa);
+		loadEmpresas();
+		return e;
 	}
 
 	public Empresa update(Empresa empresa) {
-		return repo.save(empresa);
+		Empresa e = repo.save(empresa);
+		loadEmpresas();
+		return e;
 	}
 
 	public Empresa find(Long id) {
 		return repo.findById(id).get();
 	}
-	
+
 	public List<Empresa> findByNombreParcial(String empresa) {
 		return repo.findByNombreContainingIgnoreCase(empresa);
 	}
-	
+
 	public Empresa findByNombre(String empresa) {
 		return repo.findByNombre(empresa);
 	}
@@ -37,5 +54,5 @@ public class EmpresaService {
 	public List<Empresa> findAll() {
 		return repo.findAll();
 	}
-	
+
 }
