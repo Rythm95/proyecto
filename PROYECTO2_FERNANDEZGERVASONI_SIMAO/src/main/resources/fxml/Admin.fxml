@@ -37,13 +37,83 @@
 						<Insets bottom="15" left="15" right="15" top="15" />
 					</padding>
 					<HBox spacing="10">
-						<TextField fx:id="buscadorProfe" onAction="#buscarProfe"
-							promptText="Buscar profesor..." HBox.hgrow="ALWAYS" />
-						<Button onAction="#buscarProfe" styleClass="btn-primary"
+						<HBox fx:id="boxBuscarProfe" HBox.hgrow="ALWAYS">
+							<children>
+								<TextField fx:id="txtBuscadorProfe"
+									onAction="#buscarProfe" promptText="Buscar profesor..."
+									HBox.hgrow="ALWAYS" />
+							</children>
+						</HBox>
+						<HBox fx:id="boxNuevoProfe" managed="false" visible="false"
+							HBox.hgrow="ALWAYS">
+							<children>
+								<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+									<TextField fx:id="txtNombreProfe" promptText="Nombre" />
+									<Label fx:id="lblNombreProfeError" managed="false"
+										styleClass="error-label" visible="false" />
+									<TextField fx:id="txtEmailProfe" promptText="Email" />
+									<Label fx:id="lblEmailProfeError" managed="false"
+										styleClass="error-label" visible="false" />
+									<TextField fx:id="txtUsernameProfe"
+										promptText="Usuario" />
+									<Label fx:id="lblUsernameProfeError" managed="false"
+										styleClass="error-label" visible="false" />
+									<PasswordField fx:id="txtPasswordProfe"
+										promptText="Contraseña" />
+									<Label fx:id="lblPasswordProfeError" managed="false"
+										styleClass="error-label" visible="false" />
+									<HBox spacing="10">
+										<Button onAction="#switchNuevoProfe"
+											styleClass="btn-primary" text="Guardar" />
+										<Button onAction="#switchBuscarProfe"
+											styleClass="btn-secondary" text="Cancelar" />
+									</HBox>
+								</VBox>
+							</children>
+						</HBox>
+						<HBox fx:id="boxEditarProfe" managed="false" visible="false"
+							HBox.hgrow="ALWAYS">
+							<children>
+								<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+									<children>
+										<ComboBox fx:id="cbProfeEditar" prefWidth="250"
+											promptText="Selecciona profesor" />
+										<TextField fx:id="txtEditNombreProfe"
+											promptText="Nombre" />
+										<Label fx:id="lblEditNombreProfeError" managed="false"
+											styleClass="error-label" visible="false" />
+										<TextField fx:id="txtEditEmailProfe"
+											promptText="Email" />
+										<Label fx:id="lblEditEmailProfeError" managed="false"
+											styleClass="error-label" visible="false" />
+										<TextField fx:id="txtEditUsernameProfe"
+											promptText="Usuario" />
+										<Label fx:id="lblEditUsernameProfeError" managed="false"
+											styleClass="error-label" visible="false" />
+										<PasswordField fx:id="txtEditPasswordProfe"
+											promptText="Contraseña" />
+										<Label fx:id="lblEditPasswordProfeError" managed="false"
+											styleClass="error-label" visible="false" />
+										<HBox spacing="10">
+											<children>
+												<Button onAction="#switchEditarProfe"
+													styleClass="btn-primary" text="Guardar Cambios" />
+												<Button onAction="#switchBuscarProfe"
+													styleClass="btn-secondary" text="Cancelar" />
+											</children>
+										</HBox>
+									</children>
+								</VBox>
+							</children>
+						</HBox>
+						<Button fx:id="btnBuscarProfe"
+							onAction="#switchBuscarProfe" styleClass="btn-primary"
 							text="Buscar" />
-						<Button onAction="#switchFormProfe"
+						<Button fx:id="btnNuevoProfe" onAction="#switchNuevoProfe"
 							styleClass="btn-secondary" text="Nuevo" />
-						<Button styleClass="btn-secondary" text="Editar" />
+						<Button fx:id="btnEditarProfe"
+							onAction="#switchEditarProfe" styleClass="btn-secondary"
+							text="Editar" />
 					</HBox>
 					<TableView fx:id="tablaProfes" VBox.vgrow="ALWAYS">
 						<columns>
@@ -53,48 +123,23 @@
 								text="Email" />
 						</columns>
 						<placeholder>
-							<Label text="No hay tutores registrados." />
+							<Label text="No hay profesores registrados." />
 						</placeholder>
 					</TableView>
-					<VBox fx:id="formProfe" managed="false" spacing="10"
-						styleClass="form" visible="false">
-						<Label style="-fx-font-size: 18px; -fx-font-weight: bold;"
-							text="Nuevo Profesor" />
-						<TextField fx:id="txtNombreProfe" promptText="Nombre" />
-						<Label fx:id="lblNombreProfeError" managed="false"
-							styleClass="error-label" visible="false" />
-						<TextField fx:id="txtEmailProfe" promptText="Email" />
-						<Label fx:id="lblEmailProfeError" managed="false"
-							styleClass="error-label" visible="false" />
-						<TextField fx:id="txtUsernameProfe" promptText="Usuario" />
-						<Label fx:id="lblUsernameProfeError" managed="false"
-							styleClass="error-label" visible="false" />
-						<PasswordField fx:id="txtPasswordProfe"
-							promptText="Contraseña" />
-						<Label fx:id="lblPasswordProfeError" managed="false"
-							styleClass="error-label" visible="false" />
-						<HBox spacing="10">
-							<Button onAction="#guardarProfe" styleClass="btn-primary"
-								text="Guardar" />
-							<Button onAction="#switchFormProfe"
-								styleClass="btn-secondary" text="Cancelar" />
-						</HBox>
-					</VBox>
 				</VBox>
 			</Tab>
-			<Tab text="Grupos">
+			<Tab text="Cursos">
 				<VBox spacing="15" styleClass="card">
 					<padding>
 						<Insets bottom="15" left="15" right="15" top="15" />
 					</padding>
-					<HBox spacing="10">
-						<Label text="Coordinador:" />
+					<HBox spacing="10" VBox.vgrow="NEVER">
 						<ComboBox fx:id="cbCoordinador" prefWidth="250"
 							promptText="Selecciona profesor" />
 						<Button onAction="#asignarCoordinador"
 							styleClass="btn-primary" text="Asignar Coordinador" />
 					</HBox>
-					<TableView fx:id="tablaGrupos" VBox.vgrow="ALWAYS">
+					<TableView fx:id="tablaCursos" VBox.vgrow="ALWAYS">
 						<columns>
 							<TableColumn fx:id="colCodigo" prefWidth="150"
 								text="Código" />
@@ -118,10 +163,10 @@
 					</padding>
 					<HBox spacing="10">
 						<HBox fx:id="boxAsignacionModulo" managed="false"
-							visible="false" spacing="10.0" HBox.hgrow="ALWAYS">
+							spacing="10.0" visible="false" HBox.hgrow="ALWAYS">
 							<children>
-								<ComboBox fx:id="cbGrupo" prefWidth="200"
-									promptText="Selecciona grupo" />
+								<ComboBox fx:id="cbCurso" prefWidth="200"
+									promptText="Selecciona curso" />
 								<ComboBox fx:id="cbProfesorModulo" prefWidth="250"
 									promptText="Selecciona profesor" />
 							</children>
@@ -132,44 +177,46 @@
 								<VBox HBox.hgrow="ALWAYS">
 									<children>
 										<TextField fx:id="txtNombreModulo"
-											onAction="#btnNuevoModulo" promptText="Nombre del módulo..." />
-										<Label fx:id="lblNombreModuloError"
-											styleClass="error-label" visible="false" managed="false"
-											text="" />
+											onAction="#switchNuevoModulo"
+											promptText="Nombre del módulo..." />
+										<Label fx:id="lblNombreModuloError" managed="false"
+											styleClass="error-label" text="" visible="false" />
 									</children>
 								</VBox>
 							</children>
 						</HBox>
-						<HBox fx:id="boxEdicionModulo" managed="false"
-							visible="false" spacing="10.0" HBox.hgrow="ALWAYS">
+						<HBox fx:id="boxEdicionModulo" managed="false" spacing="10.0"
+							visible="false" HBox.hgrow="ALWAYS">
 							<children>
 								<VBox HBox.hgrow="ALWAYS">
 									<children>
 										<TextField fx:id="txtEditNombreModulo"
-											onAction="#btnEditarModulo" promptText="Nombre del módulo..." />
-										<Label fx:id="lblEditNombreModuloError"
-											styleClass="error-label" visible="false" managed="false"
-											text="" />
+											onAction="#switchEditarModulo"
+											promptText="Nombre del módulo..." />
+										<Label fx:id="lblEditNombreModuloError" managed="false"
+											styleClass="error-label" text="" visible="false" />
 									</children>
 								</VBox>
-								<ComboBox fx:id="cbModuloEditar"
-									promptText="Selecciona módulo" prefWidth="250" />
+								<ComboBox fx:id="cbModuloEditar" prefWidth="250"
+									promptText="Selecciona módulo" />
 							</children>
 						</HBox>
-						<Button fx:id="btnCrearModulo" onAction="#btnNuevoModulo"
-							styleClass="btn-primary" text="Nuevo" />
+						<Button fx:id="btnCrearModulo"
+							onAction="#switchNuevoModulo" styleClass="btn-primary"
+							text="Nuevo" />
 						<Button fx:id="btnAsignarModulo"
-							onAction="#btnAsignarModulo" styleClass="btn-secondary"
+							onAction="#switchAsignarModulo" styleClass="btn-secondary"
 							text="Asignar" />
-						<Button fx:id="btnEditarModulo" onAction="#btnEditarModulo"
-							styleClass="btn-secondary" text="Editar" />
+						<Button fx:id="btnEditarModulo"
+							onAction="#switchEditarModulo" styleClass="btn-secondary"
+							text="Editar" />
 					</HBox>
 					<TableView fx:id="tablaModulos" VBox.vgrow="ALWAYS">
 						<columns>
 							<TableColumn fx:id="colModulo" prefWidth="250"
 								text="Módulo" />
-							<TableColumn fx:id="colGrupoModulo" prefWidth="150"
-								text="Grupo" />
+							<TableColumn fx:id="colCursoModulo" prefWidth="150"
+								text="Curso" />
 							<TableColumn fx:id="colProfesorModulo"
 								prefWidth="250" text="Profesor" />
 						</columns>
@@ -178,6 +225,16 @@
 						</placeholder>
 					</TableView>
 				</VBox>
+			</Tab>
+			<Tab text="Alumnos">
+				<content>
+					<fx:include source="GestionAlumno.fxml" />
+				</content>
+			</Tab>
+			<Tab text="Empresas">
+				<content>
+					<fx:include source="GestionEmpresa.fxml" />
+				</content>
 			</Tab>
 		</TabPane>
 	</center>

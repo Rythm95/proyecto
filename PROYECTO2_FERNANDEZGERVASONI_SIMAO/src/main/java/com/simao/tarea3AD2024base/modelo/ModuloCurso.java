@@ -6,12 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "modulo_id", "grupo_id" }))
-public class ModuloGrupo {
+public class ModuloCurso {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,18 +19,18 @@ public class ModuloGrupo {
 	private Modulo modulo;
 
 	@ManyToOne
-	private Grupo grupo;
+	private Curso curso;
 
 	@ManyToOne
 	private Profesor profesor;
 
-	public ModuloGrupo() {
+	public ModuloCurso() {
 
 	}
 
-	public ModuloGrupo(Modulo modulo, Grupo grupo, Profesor profesor) {
+	public ModuloCurso(Modulo modulo, Curso curso, Profesor profesor) {
 		this.modulo = modulo;
-		this.grupo = grupo;
+		this.curso = curso;
 		this.profesor = profesor;
 	}
 
@@ -53,12 +50,12 @@ public class ModuloGrupo {
 		this.modulo = modulo;
 	}
 
-	public Grupo getGrupo() {
-		return grupo;
+	public Curso getCurso() {
+		return curso;
 	}
 
-	public void setGrupo(Grupo grupo) {
-		this.grupo = grupo;
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
 
 	public Profesor getProfesor() {

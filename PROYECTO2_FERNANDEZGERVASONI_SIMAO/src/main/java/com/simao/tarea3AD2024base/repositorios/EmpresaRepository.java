@@ -10,6 +10,8 @@ import com.simao.tarea3AD2024base.modelo.Empresa;
 @Repository
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 
-	List<Empresa> findByNombre(String nombre);
+	List<Empresa> findByNombreContainingIgnoreCase(String nombre);
+	
+	Empresa findByNombre(String nombre);
 
 }

@@ -16,7 +16,7 @@ import jakarta.persistence.OneToMany;
 public class Profesor extends Persona {
 
 	@OneToMany(mappedBy = "profesor")
-	private List<ModuloGrupo> modulosGrupo = new ArrayList<>();
+	private List<ModuloCurso> modulosCurso = new ArrayList<>();
 
 	public Profesor() {
 	}
@@ -25,12 +25,12 @@ public class Profesor extends Persona {
 		super(email, user, password, nombre, Perfil.PROFESORADO);
 	}
 
-	public List<ModuloGrupo> getModulos() {
-		return modulosGrupo;
+	public List<ModuloCurso> getModulos() {
+		return modulosCurso;
 	}
 
-	public void setModulos(List<ModuloGrupo> modulosGrupo) {
-		this.modulosGrupo = modulosGrupo;
+	public void setModulos(List<ModuloCurso> modulosCurso) {
+		this.modulosCurso = modulosCurso;
 	}
 
 	@Override

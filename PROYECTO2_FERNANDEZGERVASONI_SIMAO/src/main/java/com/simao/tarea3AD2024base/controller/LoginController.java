@@ -84,12 +84,10 @@ public class LoginController implements Initializable {
 		} else if (peService.authenticate(getUsername(), getPassword())) {
 
 			Persona pers = peService.findByUser(getUsername());
-			if (pers != null && pers.getPassword().equals(getPassword())) {
 
-				session.setUserId(pers.getId());
-				session.setPerfil(pers.getPerfil());
-				session.setUsername(getUsername());
-			}
+			session.setUserId(pers.getId());
+			session.setPerfil(pers.getPerfil());
+			session.setUsername(getUsername());
 
 			switch (pers.getPerfil()) {
 			case ALUMNADO:

@@ -35,7 +35,7 @@ public class ProfesorService {
 	}
 	
 	public List<Profesor> findByNombre(String nombre) {
-		return repo.findByNombre(nombre); 
+		return repo.findByNombreContainingIgnoreCase(nombre); 
 	}
 
 }

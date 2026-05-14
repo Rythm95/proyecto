@@ -45,8 +45,6 @@ public abstract class Persona {
 	public Persona() {
 	}
 
-	
-
 	public Persona(String email, String user, String password, String nombre, Perfil perfil) {
 		super();
 		this.email = email;
@@ -55,8 +53,6 @@ public abstract class Persona {
 		this.nombre = nombre;
 		this.perfil = perfil;
 	}
-
-
 
 	public Long getId() {
 		return id;

@@ -10,19 +10,20 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import com.simao.tarea3AD2024base.config.StageManager;
-import com.simao.tarea3AD2024base.modelo.Grupo;
+import com.simao.tarea3AD2024base.modelo.Curso;
 import com.simao.tarea3AD2024base.modelo.Modulo;
-import com.simao.tarea3AD2024base.modelo.ModuloGrupo;
+import com.simao.tarea3AD2024base.modelo.ModuloCurso;
 import com.simao.tarea3AD2024base.modelo.Perfil;
+import com.simao.tarea3AD2024base.modelo.Persona;
 import com.simao.tarea3AD2024base.modelo.Profesor;
-import com.simao.tarea3AD2024base.services.GrupoService;
-import com.simao.tarea3AD2024base.services.ModuloGrupoService;
+import com.simao.tarea3AD2024base.services.CursoService;
+import com.simao.tarea3AD2024base.services.Hasher;
+import com.simao.tarea3AD2024base.services.ModuloCursoService;
 import com.simao.tarea3AD2024base.services.ModuloService;
 import com.simao.tarea3AD2024base.services.PersonaService;
 import com.simao.tarea3AD2024base.services.ProfesorService;
 import com.simao.tarea3AD2024base.view.FxmlView;
 
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,7 +39,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 @Controller
 public class AdminController implements Initializable {
@@ -56,19 +56,25 @@ public class AdminController implements Initializable {
 	private ProfesorService prService;
 
 	@Autowired
-	private GrupoService grService;
+	private CursoService cuService;
 
 	@Autowired
 	private ModuloService moService;
 
 	@Autowired
-	private ModuloGrupoService mgService;
+	private ModuloCursoService mcService;
 
 	@FXML
 	private TableView<Profesor> tablaProfes;
 
 	@FXML
-	private VBox formProfe;
+	private HBox boxNuevoProfe;
+
+	@FXML
+	private HBox boxBuscarProfe;
+
+	@FXML
+	private HBox boxEditarProfe;
 
 	@FXML
 	private HBox boxAsignacionModulo;
@@ -116,34 +122,70 @@ public class AdminController implements Initializable {
 	private Label lblNombreModuloError;
 
 	@FXML
+	private TextField txtEditNombreProfe;
+
+	@FXML
+	private Label lblEditNombreProfeError;
+
+	@FXML
+	private TextField txtEditEmailProfe;
+
+	@FXML
+	private Label lblEditEmailProfeError;
+
+	@FXML
+	private TextField txtEditUsernameProfe;
+
+	@FXML
+	private Label lblEditUsernameProfeError;
+
+	@FXML
+	private PasswordField txtEditPasswordProfe;
+
+	@FXML
+	private Label lblEditPasswordProfeError;
+
+	@FXML
+	private Button btnBuscarProfe;
+
+	@FXML
+	private Button btnNuevoProfe;
+
+	@FXML
+	private Button btnEditarProfe;
+
+	@FXML
+	private ComboBox<Profesor> cbProfeEditar;
+
+	@FXML
 	private TableColumn<Profesor, String> colNombreProfe;
 
 	@FXML
 	private TableColumn<Profesor, String> colEmailProfe;
 
 	@FXML
-	private TextField buscadorProfe;
+	private TextField txtBuscadorProfe;
 
 	@FXML
-	private TableView<Grupo> tablaGrupos;
+	private TableView<Curso> tablaCursos;
 
 	@FXML
 	private ComboBox<Profesor> cbCoordinador;
 
 	@FXML
-	private TableColumn<Grupo, String> colCodigo;
+	private TableColumn<Curso, String> colCodigo;
 
 	@FXML
-	private TableColumn<Grupo, String> colCiclo;
+	private TableColumn<Curso, String> colCiclo;
 
 	@FXML
-	private TableColumn<Grupo, Integer> colCurso;
+	private TableColumn<Curso, String> colCurso;
 
 	@FXML
-	private TableColumn<Grupo, String> colCoordinador;
+	private TableColumn<Curso, String> colCoordinador;
 
 	@FXML
-	private ComboBox<Grupo> cbGrupo;
+	private ComboBox<Curso> cbCurso;
 
 	@FXML
 	private ComboBox<Profesor> cbProfesorModulo;
@@ -167,49 +209,52 @@ public class AdminController implements Initializable {
 	private TableColumn<Modulo, String> colModulo;
 
 	@FXML
-	private TableColumn<Modulo, String> colGrupoModulo;
+	private TableColumn<Modulo, String> colCursoModulo;
 
 	@FXML
 	private TableColumn<Modulo, String> colProfesorModulo;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		cargarTablaProfes();
-		cargarGrupos();
+		cbProfeEditar.getSelectionModel().selectedItemProperty().addListener((_, _, profe) -> {
+			cargarProfeEditar(profe);
+		});
+
+		cargarCursos();
 		cargarProfes();
 		cargarModulos();
-	}
-
-	private void cargarTablaProfes() {
-		colNombreProfe.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
-		colEmailProfe.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
 	}
 
 	private void cargarProfes() {
 		List<Profesor> profes = prService.findAll();
 		ObservableList<Profesor> datos = FXCollections.observableArrayList(profes);
 
+		colNombreProfe.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
+		colEmailProfe.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
+
 		if (!profes.isEmpty()) {
 			tablaProfes.setItems(datos);
 			cbCoordinador.setItems(datos);
 			cbProfesorModulo.setItems(datos);
+			cbProfeEditar.setItems(datos);
 		}
 	}
 
-	private void cargarGrupos() {
-		List<Grupo> grupos = grService.findAll();
-		ObservableList<Grupo> datos = FXCollections.observableArrayList(grupos);
+	private void cargarCursos() {
+		List<Curso> cursos = cuService.findAll();
+		ObservableList<Curso> datos = FXCollections.observableArrayList(cursos);
 
-		cbGrupo.setItems(datos);
+		cbCurso.setItems(datos);
 
-		if (!grupos.isEmpty()) {
-			ObservableList<Grupo> lista = datos;
-			tablaGrupos.setItems(lista);
+		if (!cursos.isEmpty()) {
+			ObservableList<Curso> lista = datos;
+			tablaCursos.setItems(lista);
 		}
 
 		colCodigo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCodigo()));
 		colCiclo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCiclo().toString()));
-		colCurso.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().getCurso()));
+		colCurso.setCellValueFactory(
+				data -> new SimpleStringProperty(String.valueOf(data.getValue().getNombre().charAt(0))));
 		colCoordinador.setCellValueFactory(data -> {
 
 			Profesor coordinador = data.getValue().getCoordinador();
@@ -220,7 +265,7 @@ public class AdminController implements Initializable {
 		});
 	}
 
-	public void cargarModulos() {
+	private void cargarModulos() {
 
 		List<Modulo> modulos = moService.findAll();
 
@@ -229,44 +274,59 @@ public class AdminController implements Initializable {
 		tablaModulos.setItems(datos);
 		cbModuloEditar.setItems(datos);
 		colModulo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
-		colGrupoModulo.setCellValueFactory(data -> {
+		colCursoModulo.setCellValueFactory(data -> {
 
-			ModuloGrupo mg = mgService.findByModulo(data.getValue());
+			ModuloCurso mc = mcService.findByModulo(data.getValue());
 
-			String grupo = (mg != null && mg.getGrupo() != null) ? mg.getGrupo().getCodigo() : "Sin asignar";
+			String curso = (mc != null && mc.getCurso() != null) ? mc.getCurso().getCodigo() : "Sin asignar";
 
-			return new SimpleStringProperty(grupo);
+			return new SimpleStringProperty(curso);
 		});
 
 		colProfesorModulo.setCellValueFactory(data -> {
 
-			ModuloGrupo mg = mgService.findByModulo(data.getValue());
+			ModuloCurso mc = mcService.findByModulo(data.getValue());
 
-			String prof = (mg != null && mg.getProfesor() != null) ? mg.getProfesor().getNombre() : "Sin asignar";
+			String prof = (mc != null && mc.getProfesor() != null) ? mc.getProfesor().getNombre() : "Sin asignar";
 
 			return new SimpleStringProperty(prof);
 		});
 	}
 
 	@FXML
-	private void switchFormProfe() {
-		boolean b = tablaProfes.isVisible();
-		tablaProfes.setVisible(!b);
-		tablaProfes.setManaged(!b);
-		formProfe.setVisible(b);
-		formProfe.setManaged(b);
+	private void switchBuscarProfe() {
+		if (!boxBuscarProfe.isVisible()) {
+			switchBox(boxBuscarProfe, boxEditarProfe, boxNuevoProfe);
+			switchButton(btnBuscarProfe, btnEditarProfe, btnNuevoProfe);
+		} else {
+			buscarProfe();
+		}
 	}
 
 	@FXML
-	private void btnAsignarModulo() {
-		if (!boxAsignacionModulo.isVisible()) {
-			boxAsignacionModulo.setManaged(true);
-			boxAsignacionModulo.setVisible(true);
-			boxCreacionModulo.setManaged(false);
-			boxCreacionModulo.setVisible(false);
-			boxEdicionModulo.setVisible(false);
-			boxEdicionModulo.setManaged(false);
+	private void switchNuevoProfe() {
+		if (!boxNuevoProfe.isVisible()) {
+			switchBox(boxNuevoProfe, boxEditarProfe, boxBuscarProfe);
+			switchButton(btnNuevoProfe, btnEditarProfe, btnBuscarProfe);
+		} else {
+			guardarProfe();
+		}
+	}
 
+	@FXML
+	private void switchEditarProfe() {
+		if (!boxEditarProfe.isVisible()) {
+			switchBox(boxEditarProfe, boxBuscarProfe, boxNuevoProfe);
+			switchButton(btnEditarProfe, btnBuscarProfe, btnNuevoProfe);
+		} else {
+			editarProfe();
+		}
+	}
+
+	@FXML
+	private void switchAsignarModulo() {
+		if (!boxAsignacionModulo.isVisible()) {
+			switchBox(boxAsignacionModulo, boxEdicionModulo, boxCreacionModulo);
 			switchButton(btnAsignarModulo, btnEditarModulo, btnCrearModulo);
 		} else {
 			asignarModulo();
@@ -274,15 +334,9 @@ public class AdminController implements Initializable {
 	}
 
 	@FXML
-	private void btnNuevoModulo() {
+	private void switchNuevoModulo() {
 		if (!boxCreacionModulo.isVisible()) {
-			boxAsignacionModulo.setManaged(false);
-			boxAsignacionModulo.setVisible(false);
-			boxCreacionModulo.setManaged(true);
-			boxCreacionModulo.setVisible(true);
-			boxEdicionModulo.setVisible(false);
-			boxEdicionModulo.setManaged(false);
-
+			switchBox(boxCreacionModulo, boxEdicionModulo, boxAsignacionModulo);
 			switchButton(btnCrearModulo, btnAsignarModulo, btnEditarModulo);
 		} else {
 			guardarModulo();
@@ -290,15 +344,9 @@ public class AdminController implements Initializable {
 	}
 
 	@FXML
-	private void btnEditarModulo() {
+	private void switchEditarModulo() {
 		if (!boxEdicionModulo.isVisible()) {
-			boxAsignacionModulo.setManaged(false);
-			boxAsignacionModulo.setVisible(false);
-			boxCreacionModulo.setManaged(false);
-			boxCreacionModulo.setVisible(false);
-			boxEdicionModulo.setVisible(true);
-			boxEdicionModulo.setManaged(true);
-
+			switchBox(boxEdicionModulo, boxCreacionModulo, boxAsignacionModulo);
 			switchButton(btnEditarModulo, btnAsignarModulo, btnCrearModulo);
 		} else {
 			editarModulo();
@@ -316,9 +364,20 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	private void switchBox(HBox activo, HBox... inactivos) {
+
+		activo.setManaged(true);
+		activo.setVisible(true);
+
+		for (HBox h : inactivos) {
+			h.setManaged(false);
+			h.setVisible(false);
+		}
+	}
+
 	@FXML
 	private void buscarProfe() {
-		String texto = buscadorProfe.getText().trim();
+		String texto = txtBuscadorProfe.getText().trim();
 		if (texto.isEmpty()) {
 			cargarProfes();
 		} else {
@@ -329,7 +388,8 @@ public class AdminController implements Initializable {
 	@FXML
 	private void guardarProfe() {
 
-		if (validarProfe())
+		if (validarProfe(txtNombreProfe, lblNombreProfeError, txtEmailProfe, lblEmailProfeError, txtUsernameProfe,
+				lblUsernameProfeError, txtPasswordProfe, lblPasswordProfeError, false))
 			return;
 
 		Profesor profe = new Profesor();
@@ -337,127 +397,162 @@ public class AdminController implements Initializable {
 		profe.setNombre(txtNombreProfe.getText());
 		profe.setEmail(txtEmailProfe.getText());
 		profe.setUser(txtUsernameProfe.getText());
-		profe.setPassword(txtPasswordProfe.getText());
+		profe.setPassword(Hasher.md5(txtPasswordProfe.getText()));
 		profe.setPerfil(Perfil.PROFESORADO);
 
 		peService.save(profe);
 
-		switchFormProfe();
+		switchBuscarProfe();
 		cargarProfes();
+		limpiarForm(txtNombreProfe, txtEmailProfe, txtUsernameProfe, txtPasswordProfe);
 	}
 
-	private boolean validarProfe() {
+	private void cargarProfeEditar(Profesor profe) {
+		if (profe != null) {
+			txtEditNombreProfe.setText(profe.getNombre());
+			txtEditEmailProfe.setText(profe.getEmail());
+			txtEditUsernameProfe.setText(profe.getUser());
+			txtEditPasswordProfe.setText(profe.getPassword());
+		}
+	}
 
-		String txtNombre = txtNombreProfe.getText();
+	private void editarProfe() {
+		Profesor profe = cbProfeEditar.getValue();
+		if (profe == null)
+			return;
+
+		if (validarProfe(txtEditNombreProfe, lblEditNombreProfeError, txtEditEmailProfe, lblEditEmailProfeError,
+				txtEditUsernameProfe, lblEditUsernameProfeError, txtEditPasswordProfe, lblEditPasswordProfeError, true))
+			return;
+
+		profe.setNombre(txtEditNombreProfe.getText());
+		profe.setEmail(txtEditEmailProfe.getText());
+		profe.setUser(txtEditUsernameProfe.getText());
+		profe.setPassword(Hasher.md5(txtEditPasswordProfe.getText()));
+
+		prService.update(profe);
+
+		switchBuscarProfe();
+		cargarProfes();
+		limpiarForm(txtEditNombreProfe, txtEditEmailProfe, txtEditUsernameProfe, txtEditPasswordProfe);
+	}
+
+	private boolean validarProfe(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
+			TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword, boolean edit) {
+
+		Persona profEmail = peService.findByEmail(tfEmail.getText());
+		Persona profUser = peService.findByUser(tfUser.getText());
+		Persona profEdit = edit ? cbProfeEditar.getValue() : null;
+
+		String txtNombre = tfNombre.getText();
 		boolean nombre = txtNombre.isEmpty();
-		txtNombreProfe.pseudoClassStateChanged(EMPTY, nombre);
+		tfNombre.pseudoClassStateChanged(EMPTY, nombre);
 
 		if (!nombre) {
 			if (!Pattern.matches("^[\\p{L}]+( [\\p{L}]+)*$", txtNombre)) {
 				nombre = true;
-				lblNombreProfeError.setText("El nombre solo puede contener caracteres unicode y espacios.");
+				lblNombre.setText("El nombre solo puede contener caracteres unicode y espacios.");
 			}
 
-			lblNombreProfeError.setManaged(nombre);
-			lblNombreProfeError.setVisible(nombre);
+			lblNombre.setManaged(nombre);
+			lblNombre.setVisible(nombre);
 
 		} else {
-			lblNombreProfeError.setManaged(false);
-			lblNombreProfeError.setVisible(false);
+			lblNombre.setManaged(false);
+			lblNombre.setVisible(false);
 		}
 
-		String txtEmail = txtEmailProfe.getText();
+		String txtEmail = tfEmail.getText();
 		boolean email = txtEmail.isEmpty();
-		txtEmailProfe.pseudoClassStateChanged(EMPTY, email);
+		tfEmail.pseudoClassStateChanged(EMPTY, email);
 
 		if (!email) {
 			if (!Pattern.matches("^[\\w._%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$", txtEmail)) {
 				email = true;
-				lblEmailProfeError.setText("El email no es válido.");
-			} else if (peService.findByEmail(txtEmail) != null) {
+				lblEmail.setText("El email no es válido.");
+			} else if (profEmail != null && (profEdit == null || !profEmail.getId().equals(profEdit.getId()))) {
 				email = true;
-				lblEmailProfeError.setText("Este correo ya está registrado en la base de datos.");
+				lblEmail.setText("Este correo ya está registrado en la base de datos.");
 			}
 
-			lblEmailProfeError.setManaged(email);
-			lblEmailProfeError.setVisible(email);
+			lblEmail.setManaged(email);
+			lblEmail.setVisible(email);
 
 		} else {
-			lblEmailProfeError.setManaged(false);
-			lblEmailProfeError.setVisible(false);
+			lblEmail.setManaged(false);
+			lblEmail.setVisible(false);
 		}
 
-		String txtUsername = txtUsernameProfe.getText();
+		String txtUsername = tfUser.getText();
 		boolean username = txtUsername.isEmpty();
-		txtUsernameProfe.pseudoClassStateChanged(EMPTY, username);
+		tfUser.pseudoClassStateChanged(EMPTY, username);
 
 		if (!username) {
 			if (txtUsername.length() <= 2) {
 				username = true;
-				lblUsernameProfeError.setText("El nombre de usuario debe contener más de 2 caracteres.");
+				lblUser.setText("El nombre de usuario debe contener más de 2 caracteres.");
 			} else if (txtUsername.contains(" ")) {
 				username = true;
-				lblUsernameProfeError.setText("El nombre de usuario no debe contener espacios.");
+				lblUser.setText("El nombre de usuario no debe contener espacios.");
 			} else if (!Pattern.matches("^[a-z]+$", txtUsername)) {
 				username = true;
-				lblUsernameProfeError.setText(
+				lblUser.setText(
 						"El nombre de usuario no debe contener números ni letras mayúsculas o con tíldes o dieresis.");
-			} else if (peService.findByUser(txtUsername) != null) {
+			} else if (profUser != null && (profEdit == null || !profUser.getId().equals(profEdit.getId()))) {
 				username = true;
-				lblUsernameProfeError.setText("Este nombre de usuario ya está registrado en la base de datos.");
+				lblUser.setText("Este nombre de usuario ya está registrado en la base de datos.");
 			}
 
-			lblUsernameProfeError.setManaged(username);
-			lblUsernameProfeError.setVisible(username);
+			lblUser.setManaged(username);
+			lblUser.setVisible(username);
 
 		} else {
-			lblUsernameProfeError.setManaged(false);
-			lblUsernameProfeError.setVisible(false);
+			lblUser.setManaged(false);
+			lblUser.setVisible(false);
 		}
 
-		String txtPassword = txtPasswordProfe.getText();
+		String txtPassword = tfPassword.getText();
 		boolean password = txtPassword.isEmpty();
-		txtPasswordProfe.pseudoClassStateChanged(EMPTY, password);
+		tfPassword.pseudoClassStateChanged(EMPTY, password);
 		if (!password) {
 			if (txtPassword.length() <= 2) {
 				password = true;
-				lblPasswordProfeError.setText("La contraseña debe contener más de 2 caracteres.");
+				lblPassword.setText("La contraseña debe contener más de 2 caracteres.");
 			} else if (txtPassword.contains(" ")) {
 				password = true;
-				lblPasswordProfeError.setText("La contraseña no debe contener espacios.");
+				lblPassword.setText("La contraseña no debe contener espacios.");
 			}
 
-			lblPasswordProfeError.setManaged(password);
-			lblPasswordProfeError.setVisible(password);
+			lblPassword.setManaged(password);
+			lblPassword.setVisible(password);
 
 		} else {
-			lblPasswordProfeError.setManaged(false);
-			lblPasswordProfeError.setVisible(false);
+			lblPassword.setManaged(false);
+			lblPassword.setVisible(false);
 		}
 
 		return nombre || email || username || password;
 	}
 
 	@FXML
-	public void asignarCoordinador() {
+	private void asignarCoordinador() {
 
-		Grupo grupoSeleccionado = tablaGrupos.getSelectionModel().getSelectedItem();
+		Curso cursoSeleccionado = tablaCursos.getSelectionModel().getSelectedItem();
 
 		Profesor coordinador = cbCoordinador.getValue();
 
-		if (grupoSeleccionado == null || coordinador == null) {
+		if (cursoSeleccionado == null || coordinador == null) {
 			return;
 		}
 
-		grupoSeleccionado.setCoordinador(coordinador);
+		cursoSeleccionado.setCoordinador(coordinador);
 
-		grService.update(grupoSeleccionado);
+		cuService.update(cursoSeleccionado);
 
-		cargarGrupos();
+		cargarCursos();
 	}
 
-	@FXML
-	public void guardarModulo() {
+	private void guardarModulo() {
 
 		String txtNombre = txtNombreModulo.getText();
 		boolean nombre = txtNombre.isEmpty();
@@ -491,30 +586,29 @@ public class AdminController implements Initializable {
 		cargarModulos();
 	}
 
-	@FXML
-	public void asignarModulo() {
+	private void asignarModulo() {
 
 		Modulo modulo = tablaModulos.getSelectionModel().getSelectedItem();
-		Grupo grupo = cbGrupo.getValue();
+		Curso curso = cbCurso.getValue();
 		Profesor profe = cbProfesorModulo.getValue();
 
-		cbGrupo.pseudoClassStateChanged(EMPTY, grupo == null);
+		cbCurso.pseudoClassStateChanged(EMPTY, curso == null);
 		cbProfesorModulo.pseudoClassStateChanged(EMPTY, profe == null);
 
-		if (modulo == null || grupo == null || profe == null) {
+		if (modulo == null || curso == null || profe == null) {
 			return;
 		}
 
-		ModuloGrupo mg = mgService.findByModulo(modulo);
+		ModuloCurso mc = mcService.findByModulo(modulo);
 
-		if (mg == null)
-			mg = new ModuloGrupo();
+		if (mc == null)
+			mc = new ModuloCurso();
 
-		mg.setModulo(modulo);
-		mg.setGrupo(grupo);
-		mg.setProfesor(profe);
+		mc.setModulo(modulo);
+		mc.setCurso(curso);
+		mc.setProfesor(profe);
 
-		mgService.save(mg);
+		mcService.save(mc);
 
 		cargarModulos();
 
@@ -552,6 +646,13 @@ public class AdminController implements Initializable {
 		moService.update(modulo);
 
 		cargarModulos();
+	}
+
+	private void limpiarForm(TextField tfNombre, TextField tfEmail, TextField tfUser, PasswordField tfPassword) {
+		tfNombre.clear();
+		tfEmail.clear();
+		tfUser.clear();
+		tfPassword.clear();
 	}
 
 	public void logout(ActionEvent event) {

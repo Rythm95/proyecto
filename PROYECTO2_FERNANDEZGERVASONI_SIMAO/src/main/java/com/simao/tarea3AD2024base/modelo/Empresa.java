@@ -25,7 +25,7 @@ public class Empresa {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(unique=true)
 	private String nombre;
 
 	private String direccion;
@@ -67,5 +67,10 @@ public class Empresa {
 
 	public List<Tutor> getTutores() {
 		return tutores;
+	}
+
+	@Override
+	public String toString() {
+		return nombre;
 	}
 }

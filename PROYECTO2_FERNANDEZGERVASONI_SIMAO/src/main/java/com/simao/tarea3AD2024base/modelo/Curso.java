@@ -9,12 +9,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Grupo {
+public class Curso {
 
 	@Id
 	private String codigo;
 
-	private int curso;
+	private String nombre;
 
 	@ManyToOne
 	private Ciclo ciclo;
@@ -24,18 +24,18 @@ public class Grupo {
 
 	private String yearAcademico;
 
-	@OneToMany(mappedBy = "grupo")
+	@OneToMany(mappedBy = "curso")
 	private List<Alumno> alumnos = new ArrayList<>();
 
-	@OneToMany(mappedBy = "grupo")
-	private List<ModuloGrupo> modulos;
+	@OneToMany(mappedBy = "curso")
+	private List<ModuloCurso> modulos;
 
-	public Grupo() {
+	public Curso() {
 	}
 
-	public Grupo(String codigo, int curso, Ciclo ciclo) {
+	public Curso(String codigo, String nombre, Ciclo ciclo) {
 		this.codigo = codigo;
-		this.curso = curso;
+		this.nombre = nombre;
 		this.ciclo = ciclo;
 	}
 
@@ -47,12 +47,12 @@ public class Grupo {
 		this.codigo = codigo;
 	}
 
-	public int getCurso() {
-		return curso;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setCurso(int curso) {
-		this.curso = curso;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 	public Ciclo getCiclo() {
@@ -87,16 +87,16 @@ public class Grupo {
 		this.alumnos = alumnos;
 	}
 
-	public List<ModuloGrupo> getModulos() {
+	public List<ModuloCurso> getModulos() {
 		return modulos;
 	}
 
-	public void setModulos(List<ModuloGrupo> modulos) {
+	public void setModulos(List<ModuloCurso> modulos) {
 		this.modulos = modulos;
 	}
-	
+
 	@Override
 	public String toString() {
-		return codigo;
+		return nombre;
 	}
 }

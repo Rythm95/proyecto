@@ -6,7 +6,6 @@
 */
 package com.simao.tarea3AD2024base.modelo;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -15,34 +14,18 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class Alumno extends Persona {
 
-	@Column(nullable = false)
-	private String ciclo;
-
 	private boolean mayoriaEdad;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grupo_id")
-    private Grupo grupo;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "idTutor")
-	private Tutor tutorEmpresa;
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "idCurso")
+    private Curso curso;
 
 	public Alumno() {
 	}
 
-	public Alumno(String email, String user, String password, String nombre, String ciclo, boolean mayoriaEdad) {
+	public Alumno(String email, String user, String password, String nombre, boolean mayoriaEdad) {
 		super(email, user, password, nombre, Perfil.ALUMNADO);
-		this.ciclo = ciclo;
 		this.mayoriaEdad = mayoriaEdad;
-	}
-
-	public String getCiclo() {
-		return ciclo;
-	}
-
-	public void setCiclo(String ciclo) {
-		this.ciclo = ciclo;
 	}
 
 	public boolean isMayoriaEdad() {
@@ -53,11 +36,18 @@ public class Alumno extends Persona {
 		this.mayoriaEdad = mayoriaEdad;
 	}
 
-	public Tutor getTutorEmpresa() {
-		return tutorEmpresa;
+	public Curso getCurso() {
+		return curso;
 	}
 
-	public void setTutorEmpresa(Tutor tutorEmpresa) {
-		this.tutorEmpresa = tutorEmpresa;
+	public void setCurso(Curso curso) {
+		this.curso = curso;
 	}
+
+	@Override
+	public String toString() {
+		return nombre;
+	}
+	
+	
 }

@@ -6,13 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.simao.tarea3AD2024base.modelo.Alumno;
-import com.simao.tarea3AD2024base.modelo.Grupo;
+import com.simao.tarea3AD2024base.modelo.Curso;
 
 @Repository
 public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
 
-	List<Alumno> findByNombre(String nombre);
+	List<Alumno> findByNombreContainingIgnoreCase(String nombre);
 
-	List<Alumno> findByGrupo(Grupo grupo);
+	List<Alumno> findByCurso(Curso curso);
 
 }

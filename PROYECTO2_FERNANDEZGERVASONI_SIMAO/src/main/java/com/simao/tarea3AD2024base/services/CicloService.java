@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simao.tarea3AD2024base.modelo.Ciclo;
-import com.simao.tarea3AD2024base.modelo.Grupo;
+import com.simao.tarea3AD2024base.modelo.Curso;
 import com.simao.tarea3AD2024base.modelo.TipoCiclo;
 import com.simao.tarea3AD2024base.repositorios.CicloRepository;
 
@@ -17,7 +17,7 @@ public class CicloService {
 	private CicloRepository repo;
 	
 	@Autowired
-	private GrupoService grService;
+	private CursoService cuService;
 	
 	public void loadAll() {
 		Ciclo dawDiu = new Ciclo(TipoCiclo.DAW_DIURNO);
@@ -30,17 +30,17 @@ public class CicloService {
         repo.save(dawVir);
         repo.save(dam);
 		
-        grService.save(new Grupo("1IFC303", 1, dawDiu));
-		grService.save(new Grupo("2IFC303", 2, dawDiu));
+        cuService.save(new Curso("1IFC303", "1º DAW Diurno", dawDiu));
+		cuService.save(new Curso("2IFC303", "2º DAW Diurno", dawDiu));
 
-		grService.save(new Grupo("1VIFC303", 1, dawVes));
-		grService.save(new Grupo("2VIFC303", 2, dawVes));
+		cuService.save(new Curso("1VIFC303", "1º DAW Vespertino", dawVes));
+		cuService.save(new Curso("2VIFC303", "2º DAW Vespertino", dawVes)); 
 
-		grService.save(new Grupo("1@IFC303", 1, dawVir));
-		grService.save(new Grupo("2@IFC303", 2, dawVir));
+		cuService.save(new Curso("1@IFC303", "1º DAW Virtual", dawVir));
+		cuService.save(new Curso("2@IFC303", "2º DAW Virtual", dawVir));
 
-		grService.save(new Grupo("1VIFC302", 1, dam));
-		grService.save(new Grupo("2VIFC302", 2, dam));
+		cuService.save(new Curso("1VIFC302", "1º DAM", dam));
+		cuService.save(new Curso("2VIFC302", "2º DAM", dam));
 	}
 	
 	public List<Ciclo> findAll(){

@@ -21,7 +21,7 @@ public class PersonaService {
 		if (p == null) {
 			return false;
 		} else {
-			if (password.equals(p.getPassword()))
+			if (Hasher.md5(password).equals(p.getPassword()))
 				return true;
 			else
 				return false;

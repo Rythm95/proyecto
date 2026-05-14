@@ -10,7 +10,7 @@ import com.simao.tarea3AD2024base.modelo.Profesor;
 @Repository
 public interface ProfesorRepository extends JpaRepository<Profesor, Long> {
 
-	List<Profesor> findByNombre(String nombre);
+	List<Profesor> findByNombreContainingIgnoreCase(String nombre);
 
 	Profesor findByUser(String user);
 

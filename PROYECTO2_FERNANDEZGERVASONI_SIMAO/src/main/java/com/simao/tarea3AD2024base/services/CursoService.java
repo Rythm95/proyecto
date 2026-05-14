@@ -5,28 +5,28 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.simao.tarea3AD2024base.modelo.Grupo;
-import com.simao.tarea3AD2024base.repositorios.GrupoRepository;
+import com.simao.tarea3AD2024base.modelo.Curso;
+import com.simao.tarea3AD2024base.repositorios.CursoRepository;
 
 @Service
-public class GrupoService {
+public class CursoService {
 
 	@Autowired
-	private GrupoRepository repo;
+	private CursoRepository repo;
 
-	public Grupo save(Grupo curso) {
+	public Curso save(Curso curso) {
 		return repo.save(curso);
 	}
 
-	public Grupo update(Grupo curso) {
+	public Curso update(Curso curso) {
 		return repo.save(curso);
 	}
 
-	public Grupo find(Long id) {
+	public Curso find(Long id) {
 		return repo.findById(id).get();
 	}
 
-	public List<Grupo> findAll() {
+	public List<Curso> findAll() {
 		return repo.findAll();
 	}
 
