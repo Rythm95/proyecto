@@ -8,6 +8,18 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+/**
+ * Clase Ciclo.java
+ * 
+ * Representa un ciclo formativo identificado por un id único y posee un tipo
+ * definido por el enum {@link TipoCiclo}.
+ * 
+ * 
+ * @author Simao Fernández Gervasoni
+ * @version 1.0
+ * @see TipoCiclo
+ */
+
 @Entity
 public class Ciclo {
 

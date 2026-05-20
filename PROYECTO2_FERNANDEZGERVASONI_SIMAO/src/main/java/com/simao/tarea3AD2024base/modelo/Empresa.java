@@ -1,9 +1,3 @@
-/**
-* Clase Empresa.java
-*
-* @author Simao Fernandez Gervasoni
-* @version 1.0
-*/
 package com.simao.tarea3AD2024base.modelo;
 
 import java.util.ArrayList;
@@ -17,6 +11,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Clase Empresa.java
+ * 
+ * Una empresa se identifica por un id único y un nombre único, y puede tener
+ * asociados varios tutores.
+ *
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see Tutor
+ */
+
 @Entity
 public class Empresa {
 
@@ -25,7 +30,7 @@ public class Empresa {
 	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
-	@Column(unique=true)
+	@Column(unique = true)
 	private String nombre;
 
 	private String direccion;

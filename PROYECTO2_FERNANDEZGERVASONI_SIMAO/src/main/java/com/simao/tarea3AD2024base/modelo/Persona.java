@@ -13,8 +13,13 @@ import jakarta.persistence.InheritanceType;
 /**
  * Clase Persona.java
  *
+ * Superclase para los usuarios del sistema ({@link Alumno}, {@link Profesor},
+ * {@link Tutor}, {@link Profesor}) con un identificador, email, nombre de
+ * usuario, contraseña, nombre de la persona y su {@link Perfil}.
+ *
  * @author Simao Fernandez Gervasoni
  * @version 1.0
+ * @see Perfil
  */
 
 @Entity

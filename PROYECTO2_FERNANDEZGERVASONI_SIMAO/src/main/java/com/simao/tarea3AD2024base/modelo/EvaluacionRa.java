@@ -9,6 +9,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * Clase EvaluacionRa.java
+ * 
+ * Permite evaluar cada {@link ResultadoAprendizaje} asociado a una
+ * {@link FormacionEmpresa}.
+ * 
+ * @author Simao Fernández Gervasoni
+ * @version 1.0
+ * @see FormacionEmpresa
+ * @see ResultadoAprendizaje
+ */
+
 @Entity
 public class EvaluacionRa {
 
@@ -28,7 +40,7 @@ public class EvaluacionRa {
 
 	public EvaluacionRa() {
 	}
-	
+
 	public EvaluacionRa(FormacionEmpresa formacion, ResultadoAprendizaje resultadoAprendizaje, EstadoRA estado) {
 		this.formacion = formacion;
 		this.resultadoAprendizaje = resultadoAprendizaje;

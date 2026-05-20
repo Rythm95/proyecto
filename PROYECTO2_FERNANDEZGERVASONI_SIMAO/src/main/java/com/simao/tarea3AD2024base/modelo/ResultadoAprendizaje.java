@@ -7,6 +7,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * Clase ResultadoAprendizaje.java
+ * 
+ * Representa un Resultado de Aprendizaje de un {@link Modulo}.
+ * 
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see Modulo
+ */
+
 @Entity
 public class ResultadoAprendizaje {
 

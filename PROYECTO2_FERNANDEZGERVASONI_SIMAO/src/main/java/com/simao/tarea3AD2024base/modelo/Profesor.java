@@ -1,9 +1,3 @@
-/**
-* Clase Profesor.java
-*
-* @author Simao Fernandez Gervasoni
-* @version 1.0
-*/
 package com.simao.tarea3AD2024base.modelo;
 
 import java.util.ArrayList;
@@ -11,6 +5,18 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
+
+/**
+ * Clase Profesor.java
+ *
+ * Un profesor hereda de {@link Persona} y puede impartir varios
+ * módulos dentro de distintos cursos.
+ *
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see Persona
+ * @see ModuloCurso
+ */
 
 @Entity
 public class Profesor extends Persona {

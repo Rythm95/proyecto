@@ -7,6 +7,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * Clase ModuloCurso.java
+ * 
+ * Esta clase actúa como entidad intermedia entre {@link Modulo} y
+ * {@link Curso}, incluyendo además la relación con el {@link Profesor} que lo
+ * imparte.
+ * 
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see Modulo
+ * @see Curso
+ * @see Profesor
+ */
+
 @Entity
 public class ModuloCurso {
 

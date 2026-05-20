@@ -8,6 +8,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+/**
+ * Clase Curso.java
+ * 
+ * Representa un curso académico que pertenece a un ciclo formativo, tiene un
+ * profesor coordinador y contiene una lista de alumnos y módulos asociados.
+ * 
+ * @author Simao Fernández Gervasoni
+ * @version 1.0
+ * @see Alumno
+ * @see ModuloCurso
+ * @see Profesor
+ * @see Ciclo
+ */
+
 @Entity
 public class Curso {
 

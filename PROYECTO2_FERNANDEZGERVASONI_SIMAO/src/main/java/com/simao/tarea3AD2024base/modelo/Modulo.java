@@ -6,6 +6,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+/**
+ * Clase Modulo.java
+ * 
+ * Representa un módulo formativo que puede ser impartido en distintos cursos a
+ * través de la clase intermedia {@link ModuloCurso}
+ * 
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see ModuloCurso
+ */
+
 @Entity
 public class Modulo {
 

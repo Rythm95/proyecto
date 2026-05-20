@@ -1,13 +1,18 @@
-/**
-* Clase Tutor.java
-*
-* @author Simao Fernandez Gervasoni
-* @version 1.0
-*/
 package com.simao.tarea3AD2024base.modelo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+
+/**
+ * Clase Tutor.java
+ *
+ * Un tutor hereda de {@link Persona} y está asociado/a a una {@link Empresa}.
+ *
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see Persona
+ * @see Empresa
+ */
 
 @Entity
 public class Tutor extends Persona {

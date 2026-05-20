@@ -1,9 +1,3 @@
-/**
-* Clase Alumno.java
-*
-* @author Simao Fernandez Gervasoni
-* @version 1.0
-*/
 package com.simao.tarea3AD2024base.modelo;
 
 import jakarta.persistence.Entity;
@@ -11,14 +5,25 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * Clase Alumno.java
+ *
+ * Un alumno hereda de {@link Persona} y se asocia a un único curso. Además
+ * almacena si es mayor de edad o no.
+ *
+ * @author Simao Fernandez Gervasoni
+ * @version 1.0
+ * @see Persona
+ */
+
 @Entity
 public class Alumno extends Persona {
 
 	private boolean mayoriaEdad;
-	
+
 	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "idCurso")
-    private Curso curso;
+	@JoinColumn(name = "idCurso")
+	private Curso curso;
 
 	public Alumno() {
 	}

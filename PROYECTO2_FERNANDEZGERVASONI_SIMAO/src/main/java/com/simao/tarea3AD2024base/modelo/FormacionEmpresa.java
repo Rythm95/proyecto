@@ -12,7 +12,28 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
+
+/**
+ * Clase FormacionEmpresa.java
+ * 
+ * Gestiona la relación entre el {@link Alumno}, la {@link Empresa} en la que
+ * hará prácticas, además del {@link Profesor} tutor del centro y el
+ * {@link Tutor} de empresa, en un {@link Periodo} de prácticas, durante unas
+ * fechas.
+ * 
+ * También se almacenan el {@link EstadoFE} de la formación profesional y las
+ * {@link EvaluacionRa} de los RAs de los módulos del grupo del alumno.
+ * 
+ * @author Simao Fernández Gervasoni
+ * @version 1.0
+ * @see Alumno
+ * @see Empresa
+ * @see Profesor
+ * @see Tutor
+ * @see Periodo
+ * @see EstadoFE 
+ * @see EvaluacionRa
+ */
 
 @Entity
 public class FormacionEmpresa {
@@ -44,10 +65,6 @@ public class FormacionEmpresa {
 
 	@OneToMany(mappedBy = "formacion", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<EvaluacionRa> evaluaciones = new ArrayList<>();
-
-	@OneToMany(mappedBy = "asignacion", cascade = CascadeType.ALL, orphanRemoval = true)
-	@OrderBy("fecha ASC")
-	private List<Falta> faltas = new ArrayList<>();
 
 	public FormacionEmpresa() {
 	}
@@ -142,24 +159,15 @@ public class FormacionEmpresa {
 	public void setEvaluaciones(List<EvaluacionRa> evaluaciones) {
 		this.evaluaciones = evaluaciones;
 	}
-	
+
 	public void addEvaluacion(EvaluacionRa evaluacion) {
-	    evaluaciones.add(evaluacion);
-	    evaluacion.setFormacion(this);
-	}
-
-	public List<Falta> getFaltas() {
-		return faltas;
-	}
-
-	public void setFaltas(List<Falta> faltas) {
-		this.faltas = faltas;
+		evaluaciones.add(evaluacion);
+		evaluacion.setFormacion(this);
 	}
 
 	@Override
 	public String toString() {
 		return alumno.getNombre();
 	}
-	
-	
+
 }
