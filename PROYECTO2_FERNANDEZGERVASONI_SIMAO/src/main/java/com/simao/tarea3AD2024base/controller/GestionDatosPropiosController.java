@@ -13,16 +13,19 @@ import com.simao.tarea3AD2024base.modelo.Persona;
 import com.simao.tarea3AD2024base.services.Hasher;
 import com.simao.tarea3AD2024base.services.PersonaService;
 import com.simao.tarea3AD2024base.services.Session;
-import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.css.PseudoClass;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+/**
+ * Clase GestionDatosPropiosController.java
+ * 
+ * Gestiona las interacciones con la interfaz de gestión de datos propios.
+ */
 @Controller
 public class GestionDatosPropiosController implements Initializable {
 
@@ -67,6 +70,9 @@ public class GestionDatosPropiosController implements Initializable {
 		cargarDatos();
 	}
 
+	/**
+	 * Carga los datos personales del usuario en sesión
+	 */
 	@FXML
 	private void cargarDatos() {
 		Persona p = peService.find(session.getUserId());
@@ -76,6 +82,12 @@ public class GestionDatosPropiosController implements Initializable {
 		txtEditUsername.setText(p.getUser());
 	}
 
+	/**
+	 * Valida y edita los datos personales del usuario en sesión.
+	 * 
+	 * Si la validación es correcta, actualiza la persona en sesió en la base de
+	 * datos.
+	 */
 	@FXML
 	private void editar() {
 		Persona p = peService.find(session.getUserId());
@@ -94,6 +106,28 @@ public class GestionDatosPropiosController implements Initializable {
 		peService.update(p);
 	}
 
+	/**
+	 * Valida los datos de la persona edición.
+	 * 
+	 * Comprueba la validez de los siguientes campos: - Nombre: no vacío y formato
+	 * válido (solo letras y espacios) - Email: no vacío, formato válido y no
+	 * duplicado - Nombre de usuario: no vacío, sin espacios, formato válido y no
+	 * duplicado - Contraseña: no vacía y sin espacios
+	 * 
+	 * Durante la validación se actualiza la interfaz mostrando errores y aplicando
+	 * estilos visuales a los campos afectados.
+	 * 
+	 * @param tfNombre
+	 * @param lblNombre
+	 * @param tfEmail
+	 * @param lblEmail
+	 * @param tfUser
+	 * @param lblUser
+	 * @param tfPassword
+	 * @param lblPassword
+	 * @param p           Persona a editar
+	 * @return true si hay errores de validación, false si los datos son válidos
+	 */
 	private boolean validar(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail, TextField tfUser,
 			Label lblUser, PasswordField tfPassword, Label lblPassword, Persona p) {
 
@@ -189,13 +223,5 @@ public class GestionDatosPropiosController implements Initializable {
 		}
 
 		return nombre || email || username || password;
-	}
-
-	public void logout(ActionEvent event) {
-		stageManager.switchScene(FxmlView.LOGIN);
-	}
-
-	public void exit(ActionEvent event) {
-		System.exit(0);
 	}
 }

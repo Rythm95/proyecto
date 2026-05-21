@@ -56,6 +56,12 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+
+/**
+ * Clase GestionFormacionController.java
+ * 
+ * Gestiona las interacciones con la interfaz de gestión de empresas.
+ */
 @Controller
 public class GestionFormacionController implements Initializable {
 

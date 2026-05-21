@@ -21,13 +21,11 @@ import com.simao.tarea3AD2024base.services.FormacionEmpresaService;
 import com.simao.tarea3AD2024base.services.Hasher;
 import com.simao.tarea3AD2024base.services.PersonaService;
 import com.simao.tarea3AD2024base.services.Session;
-import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -40,6 +38,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
+/**
+ * Clase GestionAlumnoController.java
+ * 
+ * Gestiona las interacciones con la interfaz de gestión de alumnos.
+ */
 @Controller
 public class GestionAlumnoController implements Initializable {
 
@@ -57,7 +60,7 @@ public class GestionAlumnoController implements Initializable {
 
 	@Autowired
 	private CursoService cuService;
-	
+
 	@Autowired
 	private FormacionEmpresaService feService;
 
@@ -166,6 +169,16 @@ public class GestionAlumnoController implements Initializable {
 	@FXML
 	private TableColumn<Alumno, String> colEdad;
 
+	/**
+	 * Inicializa el controlador, carga los alumnos de la base de datos y configura
+	 * la vista diferenciando si el perfil de usuario es Tutor.
+	 * 
+	 * Si el usuario no es tutor, registra el listener del ComboBox de edición para
+	 * cargar automáticamente los datos seleccionados en los formularios
+	 * correspondientes y carga los cursos.
+	 * 
+	 * Si es tutor, esconde los botones de cambio de menú.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		if (session.getPerfil() == Perfil.TUTOR) {
@@ -187,14 +200,21 @@ public class GestionAlumnoController implements Initializable {
 
 	}
 
+	/**
+	 * Carga todos los alumnos desde la base de datos y los muestra en la interfaz.
+	 * Si el usuario es un tutor, solo carga los que tenga asociados.
+	 * 
+	 * Actualiza la tabla de visualización, los ComboBox relacionados, y configura
+	 * las columnas de la tabla con los valores correspondientes.
+	 */
 	private void cargarAlumnos() {
 		List<Alumno> alumnos;
-		
+
 		if (session.getPerfil() == Perfil.TUTOR)
 			alumnos = feService.getAlumnosByTutor(session.getUserId());
 		else
 			alumnos = alService.findAll();
-		
+
 		ObservableList<Alumno> datos = FXCollections.observableArrayList(alumnos);
 
 		colNombre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
@@ -209,6 +229,12 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Carga todos los Cursos desde la base de datos y los muestra en la interfaz.
+	 * 
+	 * Actualiza la tabla de visualización, los ComboBox relacionados, y configura
+	 * las columnas de la tabla con los valores correspondientes.
+	 */
 	private void cargarCursos() {
 		List<Curso> cursos = cuService.findAll();
 		ObservableList<Curso> datos = FXCollections.observableArrayList(cursos);
@@ -216,6 +242,12 @@ public class GestionAlumnoController implements Initializable {
 		cbEditCursos.setItems(datos);
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de búsqueda de Alumnos.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchBuscar() {
 		if (!boxBuscar.isVisible()) {
@@ -226,6 +258,12 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de creación de Alumnos.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchNuevo() {
 		if (!boxNuevo.isVisible()) {
@@ -236,6 +274,12 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de edición de Alumnos.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchEditar() {
 		if (!boxEditar.isVisible()) {
@@ -246,6 +290,15 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Da a un botón un estilo primario y le da uno secundario al resto.
+	 * 
+	 * El botón activo recibe el estilo "btn-primary", mientras que los botones
+	 * inactivos reciben el estilo "btn-secondary".
+	 *
+	 * @param activo    Botón que se marcará como primario
+	 * @param inactivos Botones que se marcarán como secundarios
+	 */
 	private void switchButton(Button activo, Button... inactivos) {
 
 		activo.getStyleClass().removeAll("btn-secondary", "btn-primary");
@@ -257,6 +310,15 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Muestra un HBox y oculta el resto.
+	 * 
+	 * El HBox activo pasa a ser visible y los inactivos se ocultan y dejan de
+	 * ocupar espacio en la interfaz.
+	 *
+	 * @param activo    HBox que se mostrará
+	 * @param inactivos HBox que se ocultarán
+	 */
 	private void switchBox(HBox activo, HBox... inactivos) {
 
 		activo.setManaged(true);
@@ -268,6 +330,12 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Filtra la lista de alumnos según el nombre introducido en el buscador.
+	 * 
+	 * Si el campo de búsqueda está vacío, se recargan todos los alumnos. Si no, se
+	 * muestran solo los que coincidan con el nombre.
+	 */
 	@FXML
 	private void buscar() {
 		String txt = txtBuscador.getText().trim();
@@ -278,6 +346,13 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Valida y guarda un nuevo alumno.
+	 * 
+	 * Si la validación es correcta, se crea una nueva entidad Alumno, se guarda en
+	 * la base de datos, se actualiza la lista de alumnos y se limpia el formulario,
+	 * además de notificar la creación por medio de un evento.
+	 */
 	@FXML
 	private void guardar() {
 		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbCursos, txtUsername, lblUsernameError,
@@ -305,6 +380,11 @@ public class GestionAlumnoController implements Initializable {
 		evPublisher.publishEvent(new NewAlumnoEvent(alumno));
 	}
 
+	/**
+	 * Carga los datos de un alumno en el formulario de edición.
+	 *
+	 * @param alumno Alumno cuyos datos se cargarán en el formulario.
+	 */
 	private void cargarEditar(Alumno alumno) {
 		if (alumno != null) {
 			txtEditNombre.setText(alumno.getNombre());
@@ -317,6 +397,13 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Valida y edita un alumno.
+	 * 
+	 * Si la validación es correcta, actualiza la entidad Alumno seleccionada en la
+	 * base de datos, se actualiza la lista de alumnos y se limpia el formulario,
+	 * además de notificar la actualización por medio de un evento.
+	 */
 	private void editar() {
 		Alumno alumno = cbEditarAlumno.getValue();
 		if (alumno == null)
@@ -344,6 +431,31 @@ public class GestionAlumnoController implements Initializable {
 		evPublisher.publishEvent(new NewAlumnoEvent(alumno));
 	}
 
+	/**
+	 * Valida los datos de un alumno antes de su creación o edición.
+	 * 
+	 * Comprueba la validez de los siguientes campos: - Nombre: no vacío y formato
+	 * válido (solo letras y espacios) - Email: no vacío, formato válido y no
+	 * duplicado - Curso: no vacío - Nombre de usuario: no vacío, sin espacios,
+	 * formato válido y no duplicado - Contraseña: no vacía y sin espacios
+	 * 
+	 * En modo edición se ignoran duplicidades respecto al propio alumno.
+	 * 
+	 * Durante la validación se actualiza la interfaz mostrando errores y aplicando
+	 * estilos visuales a los campos afectados.
+	 * 
+	 * @param tfNombre
+	 * @param lblNombre
+	 * @param tfEmail
+	 * @param lblEmail
+	 * @param cbCur
+	 * @param tfUser
+	 * @param lblUser
+	 * @param tfPassword
+	 * @param lblPassword
+	 * @param edit        indica si se trata de edición (true) o creación (false)
+	 * @return true si hay errores de validación, false si los datos son válidos
+	 */
 	private boolean validar(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
 			ComboBox<Curso> cbCur, TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword,
 			boolean edit) {
@@ -445,6 +557,16 @@ public class GestionAlumnoController implements Initializable {
 		return nombre || email || curso || username || password;
 	}
 
+	/**
+	 * Limpia la información introducida en los campos del formulario de creación o
+	 * edición de Alumnos.
+	 * 
+	 * @param tfNombre
+	 * @param tfEmail
+	 * @param cbCur
+	 * @param tfUser
+	 * @param tfPassword
+	 */
 	private void limpiarForm(TextField tfNombre, TextField tfEmail, ComboBox<Curso> cbCur, TextField tfUser,
 			PasswordField tfPassword) {
 		tfNombre.clear();
@@ -453,13 +575,5 @@ public class GestionAlumnoController implements Initializable {
 		cbCur.setValue(null);
 		tfUser.clear();
 		tfPassword.clear();
-	}
-
-	public void logout(ActionEvent event) {
-		stageManager.switchScene(FxmlView.LOGIN);
-	}
-
-	public void exit(ActionEvent event) {
-		System.exit(0);
 	}
 }

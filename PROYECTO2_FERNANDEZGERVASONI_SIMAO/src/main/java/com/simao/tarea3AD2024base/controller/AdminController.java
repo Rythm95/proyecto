@@ -44,6 +44,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 
+/**
+ * Clase AdminController.java
+ * 
+ * Gestiona las interacciones con la interfaz de administración del sistema.
+ */
+
 @Controller
 public class AdminController implements Initializable {
 
@@ -70,7 +76,7 @@ public class AdminController implements Initializable {
 
 	@Autowired
 	private ResultadoAprendizajeService raService;
-	
+
 	@Autowired
 	private ApplicationEventPublisher evPublisher;
 
@@ -290,6 +296,15 @@ public class AdminController implements Initializable {
 	@FXML
 	private TableColumn<ResultadoAprendizaje, String> colModuloRA;
 
+	/**
+	 * Inicializa el controlador y configura la vista.
+	 * 
+	 * Registra listeners en los ComboBox de edición para cargar automáticamente los
+	 * datos seleccionados en los formularios correspondientes.
+	 * 
+	 * Además, carga los datos iniciales de cursos, profesores, módulos y resultados
+	 * de aprendizaje en las distintas vistas.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		cbProfeEditar.getSelectionModel().selectedItemProperty().addListener((_, _, profe) -> {
@@ -306,6 +321,13 @@ public class AdminController implements Initializable {
 		cargarRAs();
 	}
 
+	/**
+	 * Carga todos los Profesores desde la base de datos y los muestra en la
+	 * interfaz.
+	 * 
+	 * Actualiza la tabla de visualización, los ComboBox relacionados, y configura
+	 * las columnas de la tabla con los valores correspondientes.
+	 */
 	private void cargarProfes() {
 		List<Profesor> profes = prService.findAll();
 		ObservableList<Profesor> datos = FXCollections.observableArrayList(profes);
@@ -321,6 +343,13 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Carga todos los Cursos desde la base de datos y los muestra en la interfaz.
+	 * 
+	 * Actualiza la tabla de visualización, los ComboBox relacionados, y configura
+	 * las columnas de la tabla con los valores correspondientes, mostrando "Sin
+	 * asignar" si no encuentra un valor para el profesor coordinador.
+	 */
 	private void cargarCursos() {
 		List<Curso> cursos = cuService.findAll();
 		ObservableList<Curso> datos = FXCollections.observableArrayList(cursos);
@@ -346,6 +375,13 @@ public class AdminController implements Initializable {
 		});
 	}
 
+	/**
+	 * Carga todos los Módulos desde la base de datos y los muestra en la interfaz.
+	 * 
+	 * Actualiza la tabla de visualización, los ComboBox relacionados, y configura
+	 * las columnas de la tabla con los valores correspondientes, mostrando "Sin
+	 * asignar" si no encuentra un valor para el curso o profesor.
+	 */
 	private void cargarModulos() {
 
 		List<Modulo> modulos = moService.findAll();
@@ -375,6 +411,13 @@ public class AdminController implements Initializable {
 		});
 	}
 
+	/**
+	 * Carga todos los Resultados de Aprendizaje desde la base de datos y los
+	 * muestra en la interfaz.
+	 * 
+	 * Actualiza la tabla de visualización, el ComboBox de edición, y configura las
+	 * columnas de la tabla con los valores correspondientes.
+	 */
 	private void cargarRAs() {
 		List<ResultadoAprendizaje> ras = raService.findAll();
 		ObservableList<ResultadoAprendizaje> datos = FXCollections.observableArrayList(ras);
@@ -386,6 +429,12 @@ public class AdminController implements Initializable {
 		colModuloRA.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getModulo().getNombre()));
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de búsqueda de Profesores.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchBuscarProfe() {
 		if (!boxBuscarProfe.isVisible()) {
@@ -396,6 +445,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de creación de Profesores.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchNuevoProfe() {
 		if (!boxNuevoProfe.isVisible()) {
@@ -406,6 +461,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de edición de Profesores.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchEditarProfe() {
 		if (!boxEditarProfe.isVisible()) {
@@ -416,6 +477,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de asignación de Módulos.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchAsignarModulo() {
 		if (!boxAsignacionModulo.isVisible()) {
@@ -426,6 +493,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de creación de Módulos.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchNuevoModulo() {
 		if (!boxCreacionModulo.isVisible()) {
@@ -436,6 +509,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de edición de Módulos.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchEditarModulo() {
 		if (!boxEdicionModulo.isVisible()) {
@@ -446,6 +525,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de búsqueda de Resultados de Apredizaje.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchBuscarRA() {
 		if (!boxBuscarRA.isVisible()) {
@@ -456,6 +541,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de creación de Resultados de Apredizaje.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchNuevoRA() {
 		if (!boxCreacionRA.isVisible()) {
@@ -466,6 +557,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de edición de Resultados de Apredizaje.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchEditarRA() {
 		if (!boxEdicionRA.isVisible()) {
@@ -476,6 +573,15 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Da a un botón un estilo primario y le da uno secundario al resto.
+	 * 
+	 * El botón activo recibe el estilo "btn-primary", mientras que los botones
+	 * inactivos reciben el estilo "btn-secondary".
+	 *
+	 * @param activo    Botón que se marcará como primario
+	 * @param inactivos Botones que se marcarán como secundarios
+	 */
 	private void switchButton(Button activo, Button... inactivos) {
 
 		activo.getStyleClass().removeAll("btn-secondary", "btn-primary");
@@ -487,6 +593,15 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Muestra un HBox y oculta el resto.
+	 * 
+	 * El HBox activo pasa a ser visible y los inactivos se ocultan y dejan de
+	 * ocupar espacio en la interfaz.
+	 *
+	 * @param activo    HBox que se mostrará
+	 * @param inactivos HBox que se ocultarán
+	 */
 	private void switchBox(HBox activo, HBox... inactivos) {
 
 		activo.setManaged(true);
@@ -498,6 +613,12 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Filtra la lista de profesores según el nombre introducido en el buscador.
+	 * 
+	 * Si el campo de búsqueda está vacío, se recargan todos los profesores. Si no,
+	 * se muestran solo los que coincidan con el nombre.
+	 */
 	@FXML
 	private void buscarProfe() {
 		String texto = txtBuscadorProfe.getText().trim();
@@ -508,6 +629,13 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Filtra los Resultados de Aprendizaje según el código introducido en el
+	 * buscador.
+	 * 
+	 * Si el campo de búsqueda está vacío, se cargan todos los RAs. Si no, se
+	 * muestran solo los que coincidan con el código.
+	 */
 	@FXML
 	private void buscarRA() {
 		String texto = txtBuscadorRA.getText().trim();
@@ -518,6 +646,13 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Valida y guarda un nuevo profesor.
+	 * 
+	 * Si la validación es correcta, se crea una nueva entidad Profesor, se guarda
+	 * en la base de datos, se actualiza la lista de profesores y se limpia el
+	 * formulario, además de notificar la creación por medio de un evento.
+	 */
 	@FXML
 	private void guardarProfe() {
 
@@ -538,10 +673,18 @@ public class AdminController implements Initializable {
 		switchBuscarProfe();
 		cargarProfes();
 		limpiarForm(txtNombreProfe, txtEmailProfe, txtUsernameProfe, txtPasswordProfe);
-		
+
 		evPublisher.publishEvent(new NewProfesorEvent(profe));
 	}
 
+	/**
+	 * Valida y guarda un nuevo resultado de aprendizaje.
+	 * 
+	 * Si la validación es correcta, se crea una nueva entidad ResultadoAprendizaje,
+	 * se guarda en la base de datos, se actualiza la lista de resultados de
+	 * aprendizaje y se limpia el formulario, además de notificar la creación por
+	 * medio de un evento.
+	 */
 	@FXML
 	private void guardarRA() {
 
@@ -561,6 +704,13 @@ public class AdminController implements Initializable {
 		limpiarFormRA(txtNombreRA, txtDescRA, cbModuloRA);
 	}
 
+	/**
+	 * Valida y edita un resultado de aprendizaje.
+	 * 
+	 * Si la validación es correcta, actualiza la entidad ResultadoAprendizaje
+	 * seleccionada en la base de datos, se actualiza la lista de RAs y se limpia el
+	 * formulario, además de notificar la actualización por medio de un evento.
+	 */
 	private void editarRA() {
 		ResultadoAprendizaje ra = cbRAEdit.getValue();
 		if (ra == null)
@@ -580,6 +730,11 @@ public class AdminController implements Initializable {
 		limpiarFormRA(txtNombreRAEdit, txtDescRAEdit, cbModuloRAEdit);
 	}
 
+	/**
+	 * Carga los datos de un profesor en el formulario de edición.
+	 *
+	 * @param profe profesor cuyos datos se cargarán en el formulario
+	 */
 	private void cargarProfeEditar(Profesor profe) {
 		if (profe != null) {
 			txtEditNombreProfe.setText(profe.getNombre());
@@ -588,6 +743,11 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Carga los datos de un resultado de aprendizaje en el formulario de edición.
+	 * 
+	 * @param ra resultado de aprendizaje cuyos datos se cargarán en el formulario
+	 */
 	private void cargarRAEditar(ResultadoAprendizaje ra) {
 		if (ra != null) {
 			txtNombreRAEdit.setText(ra.getCodigo());
@@ -596,6 +756,13 @@ public class AdminController implements Initializable {
 		}
 	}
 
+	/**
+	 * Valida y edita un profesor.
+	 * 
+	 * Si la validación es correcta, actualiza la entidad Profesor seleccionada en
+	 * la base de datos, se actualiza la lista de profesores y se limpia el
+	 * formulario, además de notificar la actualización por medio de un evento.
+	 */
 	private void editarProfe() {
 		Profesor profe = cbProfeEditar.getValue();
 		if (profe == null)
@@ -615,10 +782,34 @@ public class AdminController implements Initializable {
 		switchBuscarProfe();
 		cargarProfes();
 		limpiarForm(txtEditNombreProfe, txtEditEmailProfe, txtEditUsernameProfe, txtEditPasswordProfe);
-		
+
 		evPublisher.publishEvent(new NewProfesorEvent(profe));
 	}
 
+	/**
+	 * Valida los datos de un profesor antes de su creación o edición.
+	 * 
+	 * Valida: - El nombre no está vacío - El nombre solo está compuesto de letras y
+	 * espacios - El email no está vacío - El email tiene un formato válido y no
+	 * duplicado - El nombre de usuario no está vacío - El nombre de usuario está
+	 * compuesto de letras minúscuclas sin espacios y no está duplicado - La
+	 * contraseña no está vacía y no contiene espacios.
+	 * 
+	 * Si algún campo da error, lo hará saber actualizando labels y estilos de la
+	 * interfáz en los campos correspondientes.
+	 * 
+	 * @param tfNombre
+	 * @param lblNombre
+	 * @param tfEmail
+	 * @param lblEmail
+	 * @param tfUser
+	 * @param lblUser
+	 * @param tfPassword
+	 * @param lblPassword
+	 * @param edit        indica si la validación es para edición (true) o creación
+	 *                    (false)
+	 * @return true si hay errores de validación, false si los datos son válidos
+	 */
 	private boolean validarProfe(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
 			TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword, boolean edit) {
 
@@ -716,6 +907,25 @@ public class AdminController implements Initializable {
 		return nombre || email || username || password;
 	}
 
+	/**
+	 * Valida los datos de un Resultado de Aprendizaje antes de su creación o
+	 * edición.
+	 * 
+	 * Validaciones: - El código no está vacío - No existe otro RA con el mismo
+	 * código - La descripción no está vacía - Se ha seleccionado el módulo al que
+	 * pertenece el RA
+	 * 
+	 * Si algún campo da error, lo hará saber actualizando labels y estilos de la
+	 * interfáz en los campos correspondientes.
+	 * 
+	 * @param tfCodigo
+	 * @param lblCodigo
+	 * @param tfDesc
+	 * @param cbModulo
+	 * @param edit      indica si la validación es para edición (true) o creación
+	 *                  (false)
+	 * @return true si hay errores de validación, false si los datos son válidos
+	 */
 	private boolean validarRA(TextField tfCodigo, Label lblCodigo, TextArea tfDesc, ComboBox<Modulo> cbModulo,
 			boolean edit) {
 
@@ -748,24 +958,38 @@ public class AdminController implements Initializable {
 		return codigo || desc || modulo;
 	}
 
+	/**
+	 * Asigna un profesor como coordinador del curso seleccionado.
+	 * 
+	 * Valida que exista un curso seleccionado en la tabla y un profesor
+	 * seleccionado en el ComboBox. Si alguno es nulo, la operación no se ejecuta.
+	 * 
+	 * En caso válido, actualiza el coordinador del curso, guarda el cambio y
+	 * recarga la lista de cursos.
+	 */
 	@FXML
 	private void asignarCoordinador() {
-
 		Curso cursoSeleccionado = tablaCursos.getSelectionModel().getSelectedItem();
-
 		Profesor coordinador = cbCoordinador.getValue();
 
-		if (cursoSeleccionado == null || coordinador == null) {
+		if (cursoSeleccionado == null || coordinador == null)
 			return;
-		}
 
 		cursoSeleccionado.setCoordinador(coordinador);
-
 		cuService.update(cursoSeleccionado);
 
 		cargarCursos();
 	}
 
+	/**
+	 * Valida y guarda un nuevo módulo en el sistema.
+	 * 
+	 * Validaciones: - El nombre no puede estar vacío - Debe tener más de 2
+	 * caracteres - No puede existir otro módulo con el mismo nombre
+	 * 
+	 * Si la validación falla, se muestran mensajes de error en la interfaz. Si no,
+	 * se guarda el módulo en la base de datos y se recarga la lista de módulos.
+	 */
 	private void guardarModulo() {
 
 		String txtNombre = txtNombreModulo.getText();
@@ -800,6 +1024,13 @@ public class AdminController implements Initializable {
 		cargarModulos();
 	}
 
+	/**
+	 * Asigna un módulo a un curso junto con su profesor.
+	 * 
+	 * Valida que se haya seleccionado un módulo, un curso y un profesor. Si la
+	 * asignación ya existe, se actualiza; si no, se crea una nueva en la base de
+	 * datos.
+	 */
 	private void asignarModulo() {
 
 		Modulo modulo = tablaModulos.getSelectionModel().getSelectedItem();
@@ -828,6 +1059,15 @@ public class AdminController implements Initializable {
 
 	}
 
+	/**
+	 * Edita la información de un módulo existente.
+	 * 
+	 * Validaciones:- El nombre no puede estar vacío - Debe tener más de 2
+	 * caracteres - No puede existir otro módulo con el mismo nombre
+	 * 
+	 * Si la validación es correcta, se actualiza el módulo en la base de datos y se
+	 * recarga la lista de módulos.
+	 */
 	private void editarModulo() {
 
 		Modulo modulo = cbModuloEditar.getValue();
@@ -862,6 +1102,15 @@ public class AdminController implements Initializable {
 		cargarModulos();
 	}
 
+	/**
+	 * Limpia la información introducida en los campos del formulario de creación o
+	 * edición de Profesores.
+	 * 
+	 * @param tfNombre
+	 * @param tfEmail
+	 * @param tfUser
+	 * @param tfPassword
+	 */
 	private void limpiarForm(TextField tfNombre, TextField tfEmail, TextField tfUser, PasswordField tfPassword) {
 		tfNombre.clear();
 		tfEmail.clear();
@@ -869,6 +1118,14 @@ public class AdminController implements Initializable {
 		tfPassword.clear();
 	}
 
+	/**
+	 * Limpia la información introducida en los campos del formulario de creación o
+	 * edición de Resultados de Aprendizaje.
+	 * 
+	 * @param tfCodigo
+	 * @param tfDesc
+	 * @param cbModulo
+	 */
 	private void limpiarFormRA(TextField tfCodigo, TextArea tfDesc, ComboBox<Modulo> cbModulo) {
 		tfCodigo.clear();
 		tfDesc.clear();
@@ -876,10 +1133,20 @@ public class AdminController implements Initializable {
 		cbModulo.setValue(null);
 	}
 
+	/**
+	 * Cierra la sesión actual y vuelve a la pantalla de inicio de sesión.
+	 *
+	 * @param event Evento lanzado desde la interfaz
+	 */
 	public void logout(ActionEvent event) {
 		stageManager.switchScene(FxmlView.LOGIN);
 	}
 
+	/**
+	 * Finaliza la aplicación.
+	 *
+	 * @param event Evento lanzado desde la interfaz
+	 */
 	public void exit(ActionEvent event) {
 		System.exit(0);
 	}
