@@ -46,16 +46,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
 
 /**
  * Clase GestionFormacionController.java
@@ -170,6 +171,18 @@ public class GestionFormacionController implements Initializable {
 	private VBox boxEvaluaciones;
 
 	@FXML
+	private HBox boxFaltas;
+
+	@FXML
+	private DatePicker dpFechaFalta;
+
+	@FXML
+	private CheckBox checkJustificada;
+
+	@FXML
+	private ComboBox<FormacionEmpresa> cbFEFalta;
+
+	@FXML
 	private Button btnNuevo;
 
 	@FXML
@@ -177,6 +190,12 @@ public class GestionFormacionController implements Initializable {
 
 	@FXML
 	private Button btnEvaluar;
+
+	@FXML
+	private Button btnFaltas;
+	
+	@FXML
+	private TextArea txtDescripcionFalta;
 
 	@FXML
 	private TableView<FormacionEmpresa> tablaFormaciones;
@@ -216,6 +235,8 @@ public class GestionFormacionController implements Initializable {
 			if (session.getPerfil() == Perfil.TUTOR)
 				switchEvaluar();
 			else {
+				btnFaltas.setVisible(false);
+				btnFaltas.setManaged(false);
 				btnEvaluar.setVisible(false);
 				btnEvaluar.setManaged(false);
 			}
@@ -243,7 +264,7 @@ public class GestionFormacionController implements Initializable {
 		if (session.getPerfil() == Perfil.TUTOR)
 			fes = feService.findByTutor(tuService.find(session.getUserId()));
 		else if (session.getPerfil() == Perfil.ALUMNADO)
-			fes.add(feService.findByAlumno(alService.find(session.getUserId())));
+			fes = feService.findByAlumno(alService.find(session.getUserId()));
 		else
 			fes = feService.findAll();
 
@@ -253,7 +274,7 @@ public class GestionFormacionController implements Initializable {
 		colTutorCentro
 				.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTutorCentro().getNombre()));
 		colEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmpresa().getNombre()));
-		colTutorEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmpresa().getNombre()));
+		colTutorEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTutorEmpresa().getNombre()));
 		colFechaIni.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFechaIni().toString()));
 		colFechaFin.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFechaFin().toString()));
 		colPeriodo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPeriodo().toString()));
@@ -263,6 +284,7 @@ public class GestionFormacionController implements Initializable {
 			tablaFormaciones.setItems(datos);
 			cbEditarFE.setItems(datos);
 			cbEvaluarFE.setItems(datos);
+			cbFEFalta.setItems(datos);
 		}
 	}
 
@@ -298,8 +320,8 @@ public class GestionFormacionController implements Initializable {
 	@FXML
 	private void switchNuevo() {
 		if (!boxNuevo.isVisible()) {
-			switchBox(boxNuevo, boxEvaluar, boxReasignar);
-			switchButton(btnNuevo, btnEvaluar, btnReasignar);
+			switchBox(boxNuevo, boxEvaluar, boxReasignar, boxFaltas);
+			switchButton(btnNuevo, btnEvaluar, btnReasignar, btnFaltas);
 		} else {
 			guardar();
 		}
@@ -308,8 +330,8 @@ public class GestionFormacionController implements Initializable {
 	@FXML
 	private void switchReasignar() {
 		if (!boxReasignar.isVisible()) {
-			switchBox(boxReasignar, boxEvaluar, boxNuevo);
-			switchButton(btnReasignar, btnEvaluar, btnNuevo);
+			switchBox(boxReasignar, boxEvaluar, boxNuevo, boxFaltas);
+			switchButton(btnReasignar, btnEvaluar, btnNuevo, btnFaltas);
 		} else {
 			editar();
 		}
@@ -318,10 +340,20 @@ public class GestionFormacionController implements Initializable {
 	@FXML
 	private void switchEvaluar() {
 		if (!boxEvaluar.isVisible()) {
-			switchBox(boxEvaluar, boxReasignar, boxNuevo);
-			switchButton(btnEvaluar, btnReasignar, btnNuevo);
+			switchBox(boxEvaluar, boxReasignar, boxNuevo, boxFaltas);
+			switchButton(btnEvaluar, btnReasignar, btnNuevo, btnFaltas);
 		} else {
 			evaluar();
+		}
+	}
+
+	@FXML
+	private void switchFaltas() {
+		if (!boxFaltas.isVisible()) {
+			switchBox(boxFaltas, boxReasignar, boxNuevo, boxEvaluar);
+			switchButton(btnFaltas, btnReasignar, btnNuevo, btnEvaluar);
+		} else {
+			registrarFalta();
 		}
 	}
 
@@ -345,11 +377,6 @@ public class GestionFormacionController implements Initializable {
 			h.setManaged(false);
 			h.setVisible(false);
 		}
-	}
-
-	@FXML
-	private void buscar() {
-
 	}
 
 	@FXML
@@ -442,7 +469,7 @@ public class GestionFormacionController implements Initializable {
 			cbAlumno.pseudoClassStateChanged(EMPTY, alumno);
 
 			if (!alumno) {
-				if (feService.findByAlumno(cbAlumno.getValue()) != null) {
+				if (!feService.findByAlumno(cbAlumno.getValue()).isEmpty()) {
 					alumno = true;
 					lblAlumnoError.setText("Este alumno ya está asociado a una FE.");
 				}
@@ -473,7 +500,7 @@ public class GestionFormacionController implements Initializable {
 		boolean fechaFin = dpFin.getValue() == null;
 		dpFin.pseudoClassStateChanged(EMPTY, fechaFin);
 
-		boolean fechas = fechaIni && fechaFin;
+		boolean fechas = fechaIni || fechaFin;
 		if (!fechas) {
 			if (dpFin.getValue().isBefore(dpIni.getValue())) {
 				fechas = true;
@@ -567,7 +594,12 @@ public class GestionFormacionController implements Initializable {
 	}
 
 	private void evaluar() {
-		FormacionEmpresa fe = feService.findCompleta(cbEvaluarFE.getValue().getId());
+		FormacionEmpresa feSelected = cbEvaluarFE.getValue();
+
+		if (feSelected == null)
+			return;
+
+		FormacionEmpresa fe = feService.findCompleta(feSelected.getId());
 
 		for (EvaluacionRow row : evaluacionRows) {
 
@@ -602,10 +634,12 @@ public class GestionFormacionController implements Initializable {
 	@FXML
 	private void exportar() throws Exception {
 
-		FormacionEmpresa fe = feService.findCompleta(tablaFormaciones.getSelectionModel().getSelectedItem().getId());
+		FormacionEmpresa feSelect = tablaFormaciones.getSelectionModel().getSelectedItem();
 
-		if (fe == null)
+		if (feSelect == null)
 			return;
+
+		FormacionEmpresa fe = feService.findCompleta(feSelect.getId());
 
 		Path carpeta = Paths.get(System.getProperty("user.dir"), "ficheros");
 		Files.createDirectories(carpeta);
@@ -644,6 +678,10 @@ public class GestionFormacionController implements Initializable {
 		}
 
 		doc.close();
+	}
+
+	private void registrarFalta() {
+
 	}
 
 	public void logout(ActionEvent event) {

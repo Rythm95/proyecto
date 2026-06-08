@@ -31,8 +31,8 @@ public class FormacionEmpresaService {
 		return repo.findById(id).get();
 	}
 
-	public FormacionEmpresa findByAlumno(Alumno alumno) {
-		return repo.findByAlumno(alumno);
+	public List<FormacionEmpresa> findByAlumno(Alumno alumno) {
+		return repo.findByAlumnoWithFaltas(alumno);
 	}
 	
 	public List<FormacionEmpresa> findByTutor(Tutor tutor) {

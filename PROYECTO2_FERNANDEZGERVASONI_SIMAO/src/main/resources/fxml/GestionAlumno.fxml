@@ -12,82 +12,114 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="15" styleClass="card" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.simao.tarea3AD2024base.controller.GestionAlumnoController">
-   <padding>
-      <Insets bottom="15" left="15" right="15" top="15" />
-   </padding>
-   <children>
-      <HBox spacing="10">
-         <children>
-            <HBox fx:id="boxBuscar" HBox.hgrow="ALWAYS">
-               <children>
-                  <TextField fx:id="txtBuscador" onAction="#buscar" promptText="Buscar alumno..." HBox.hgrow="ALWAYS" />
-               </children>
-            </HBox>
-            <HBox fx:id="boxNuevo" managed="false" visible="false" HBox.hgrow="ALWAYS">
-               <children>
-                  <VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
-                     <children>
-                        <TextField fx:id="txtNombre" promptText="Nombre" />
-                        <Label fx:id="lblNombreError" managed="false" styleClass="error-label" visible="false" />
-                        <TextField fx:id="txtEmail" promptText="Email" />
-                        <Label fx:id="lblEmailError" managed="false" styleClass="error-label" visible="false" />
-                        <ComboBox fx:id="cbCursos" prefWidth="150.0"  promptText="Selecciona curso"/>
-                        <CheckBox fx:id="checkEdad" mnemonicParsing="false" selected="true" text="Mayor de Edad" />
-                        <TextField fx:id="txtUsername" promptText="Usuario" />
-                        <Label fx:id="lblUsernameError" managed="false" styleClass="error-label" visible="false" />
-                        <PasswordField fx:id="txtPassword" promptText="Contraseña" />
-                        <Label fx:id="lblPasswordError" managed="false" styleClass="error-label" visible="false" />
-                        <HBox spacing="10">
-                           <children>
-                              <Button onAction="#switchNuevo" styleClass="btn-primary" text="Guardar" />
-                              <Button onAction="#switchBuscar" styleClass="btn-secondary" text="Cancelar" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox fx:id="boxEditar" managed="false" visible="false" HBox.hgrow="ALWAYS">
-               <children>
-                  <VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
-                     <children>
-                        <ComboBox fx:id="cbEditarAlumno" prefWidth="250" promptText="Selecciona alumno" />
-                        <TextField fx:id="txtEditNombre" promptText="Nombre" />
-                        <Label fx:id="lblEditNombreError" managed="false" styleClass="error-label" visible="false" />
-                        <TextField fx:id="txtEditEmail" promptText="Email" />
-                        <Label fx:id="lblEditEmailError" managed="false" styleClass="error-label" visible="false" />
-                        <ComboBox fx:id="cbEditCursos" prefWidth="150.0"  promptText="Selecciona curso"/>
-                        <CheckBox fx:id="checkEditEdad" mnemonicParsing="false" selected="true" text="Mayor de Edad" />
-                        <TextField fx:id="txtEditUsername" promptText="Usuario" />
-                        <Label fx:id="lblEditUsernameError" managed="false" styleClass="error-label" visible="false" />
-                        <PasswordField fx:id="txtEditPassword" promptText="Contraseña" />
-                        <Label fx:id="lblEditPasswordError" managed="false" styleClass="error-label" visible="false" />
-                        <HBox spacing="10">
-                           <children>
-                              <Button onAction="#switchEditar" styleClass="btn-primary" text="Guardar Cambios" />
-                              <Button onAction="#switchBuscar" styleClass="btn-secondary" text="Cancelar" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <Button fx:id="btnBuscar" onAction="#switchBuscar" styleClass="btn-primary" text="Buscar" />
-            <Button fx:id="btnNuevo" onAction="#switchNuevo" styleClass="btn-secondary" text="Nuevo" />
-            <Button fx:id="btnEditar" onAction="#switchEditar" styleClass="btn-secondary" text="Editar" />
-         </children>
-      </HBox>
-      <TableView fx:id="tablaAlumnos" VBox.vgrow="ALWAYS">
-         <columns>
-            <TableColumn fx:id="colNombre" text="Nombre" />
-            <TableColumn fx:id="colEmail" text="Email" />
-            <TableColumn fx:id="colCurso" text="Curso" />
-            <TableColumn fx:id="colEdad" text="Mayoría de Edad" />
-         </columns>
-         <placeholder>
-            <Label text="No hay alumnos registrados." />
-         </placeholder>
-      </TableView>
-   </children>
+<VBox spacing="15" styleClass="card"
+	xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="com.simao.tarea3AD2024base.controller.GestionAlumnoController">
+	<padding>
+		<Insets bottom="15" left="15" right="15" top="15" />
+	</padding>
+	<children>
+		<HBox spacing="10">
+			<children>
+				<HBox fx:id="boxBuscar" HBox.hgrow="ALWAYS">
+					<children>
+						<TextField fx:id="txtBuscador" onAction="#buscar"
+							promptText="Buscar alumno..." HBox.hgrow="ALWAYS" />
+					</children>
+				</HBox>
+				<HBox fx:id="boxNuevo" managed="false" visible="false"
+					HBox.hgrow="ALWAYS">
+					<children>
+						<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+							<children>
+								<TextField fx:id="txtNombre" promptText="Nombre" />
+								<Label fx:id="lblNombreError" managed="false"
+									styleClass="error-label" visible="false" />
+								<TextField fx:id="txtEmail" promptText="Email" />
+								<Label fx:id="lblEmailError" managed="false"
+									styleClass="error-label" visible="false" />
+								<ComboBox fx:id="cbCursos" prefWidth="150.0"
+									promptText="Selecciona curso" />
+								<Label fx:id="lblCursosError" managed="false"
+									styleClass="error-label" visible="false" />
+								<CheckBox fx:id="checkEdad" mnemonicParsing="false"
+									selected="true" text="Mayor de Edad" />
+								<TextField fx:id="txtUsername" promptText="Usuario" />
+								<Label fx:id="lblUsernameError" managed="false"
+									styleClass="error-label" visible="false" />
+								<PasswordField fx:id="txtPassword"
+									promptText="Contraseña" />
+								<Label fx:id="lblPasswordError" managed="false"
+									styleClass="error-label" visible="false" />
+								<HBox spacing="10">
+									<children>
+										<Button onAction="#switchNuevo"
+											styleClass="btn-primary" text="Guardar" />
+										<Button onAction="#switchBuscar"
+											styleClass="btn-secondary" text="Cancelar" />
+									</children>
+								</HBox>
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<HBox fx:id="boxEditar" managed="false" visible="false"
+					HBox.hgrow="ALWAYS">
+					<children>
+						<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+							<children>
+								<ComboBox fx:id="cbEditarAlumno" prefWidth="250"
+									promptText="Selecciona alumno" />
+								<TextField fx:id="txtEditNombre" promptText="Nombre" />
+								<Label fx:id="lblEditNombreError" managed="false"
+									styleClass="error-label" visible="false" />
+								<TextField fx:id="txtEditEmail" promptText="Email" />
+								<Label fx:id="lblEditEmailError" managed="false"
+									styleClass="error-label" visible="false" />
+								<ComboBox fx:id="cbEditCursos" prefWidth="150.0"
+									promptText="Selecciona curso" />
+								<Label fx:id="lblEditCursosError" managed="false"
+									styleClass="error-label" visible="false" />
+								<CheckBox fx:id="checkEditEdad" mnemonicParsing="false"
+									selected="true" text="Mayor de Edad" />
+								<TextField fx:id="txtEditUsername"
+									promptText="Usuario" />
+								<Label fx:id="lblEditUsernameError" managed="false"
+									styleClass="error-label" visible="false" />
+								<PasswordField fx:id="txtEditPassword"
+									promptText="Contraseña" />
+								<Label fx:id="lblEditPasswordError" managed="false"
+									styleClass="error-label" visible="false" />
+								<HBox spacing="10">
+									<children>
+										<Button onAction="#switchEditar"
+											styleClass="btn-primary" text="Guardar Cambios" />
+										<Button onAction="#switchBuscar"
+											styleClass="btn-secondary" text="Cancelar" />
+									</children>
+								</HBox>
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<Button fx:id="btnBuscar" onAction="#switchBuscar"
+					styleClass="btn-primary" text="Buscar" />
+				<Button fx:id="btnNuevo" onAction="#switchNuevo"
+					styleClass="btn-secondary" text="Nuevo" />
+				<Button fx:id="btnEditar" onAction="#switchEditar"
+					styleClass="btn-secondary" text="Editar" />
+			</children>
+		</HBox>
+		<TableView fx:id="tablaAlumnos" VBox.vgrow="ALWAYS">
+			<columns>
+				<TableColumn fx:id="colNombre" text="Nombre" />
+				<TableColumn fx:id="colEmail" text="Email" />
+				<TableColumn fx:id="colCurso" text="Curso" />
+				<TableColumn fx:id="colEdad" text="Mayoría de Edad" />
+			</columns>
+			<placeholder>
+				<Label text="No hay alumnos registrados." />
+			</placeholder>
+		</TableView>
+	</children>
 </VBox>

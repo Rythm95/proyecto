@@ -9,11 +9,13 @@ public class Session {
 	private Perfil perfil = null;
 	private Long userId = null;
 	private String username = null;
+	private Long idGest = null;
 
 	public void clear() {
 		perfil = null;
 		userId = null;
 		username = null;
+		idGest = null;
 	}
 
 	public Perfil getPerfil() {
@@ -38,6 +40,14 @@ public class Session {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Long getIdGest() {
+		return idGest;
+	}
+
+	public void setIdGest(Long idGest) {
+		this.idGest = idGest;
 	}
 
 }

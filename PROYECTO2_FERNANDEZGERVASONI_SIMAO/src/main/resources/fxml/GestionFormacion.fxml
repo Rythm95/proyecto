@@ -6,99 +6,117 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox spacing="15" styleClass="card" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.simao.tarea3AD2024base.controller.GestionFormacionController">
-   <padding>
-      <Insets bottom="15" left="15" right="15" top="15" />
-   </padding>
-   <children>
-      <HBox spacing="10">
-         <children>
-            <HBox fx:id="boxNuevo" HBox.hgrow="ALWAYS">
-               <children>
-                  <VBox spacing="10.0">
-                     <children>
-                        <HBox spacing="10.0">
-                           <children>
-                              <ComboBox fx:id="cbAlumno" promptText="Selecciona alumno" />
-                              <ComboBox fx:id="cbTutorEmpresa" promptText="Selecciona tutor de empresa" />
-                              <ComboBox fx:id="cbTutorCentro" promptText="Selecciona tutor de centro" />
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblAlumnoError" managed="false" styleClass="error-label" visible="false" />
-                        <HBox spacing="10.0">
-                           <children>
-                              <ComboBox fx:id="cbPeriodo" prefWidth="150.0" promptText="Periodo" />
-                              <DatePicker fx:id="dpIni" promptText="Fecha Inicio" />
-                              <DatePicker fx:id="dpFin" promptText="Fecha Fin" />
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblDateError" managed="false" styleClass="error-label" visible="false" />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox fx:id="boxReasignar" managed="false" visible="false" HBox.hgrow="ALWAYS">
-               <children>
-                  <VBox spacing="10.0">
-                     <children>
-                     	<ComboBox fx:id="cbEditarFE" promptText="Selecciona FE" />
-                        <HBox spacing="10.0">
-                           <children>
-                              <ComboBox fx:id="cbTutorEmpresaEdit" promptText="Selecciona tutor de empresa" />
-                              <ComboBox fx:id="cbTutorCentroEdit" promptText="Selecciona tutor de centro" />
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblAlumnoErrorEdit" managed="false" styleClass="error-label" visible="false" />
-                        <HBox spacing="10.0">
-                           <children>
-                              <ComboBox fx:id="cbPeriodoEdit" prefWidth="150.0" promptText="Periodo" />
-                              <DatePicker fx:id="dpIniEdit" promptText="Fecha Inicio" />
-                              <DatePicker fx:id="dpFinEdit" promptText="Fecha Fin" />
-                           </children>
-                        </HBox>
-                        <Label fx:id="lblDateErrorEdit" managed="false" styleClass="error-label" visible="false" />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <HBox fx:id="boxEvaluar" managed="false" visible="false" HBox.hgrow="ALWAYS">
-               <children>
-                  <VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
-                     <children>
-                     <ComboBox fx:id="cbEvaluarFE" prefWidth="150.0" promptText="Selecciona FE" />
-                     <VBox fx:id="boxEvaluaciones" spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
-                     </VBox>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <Button fx:id="btnNuevo" onAction="#switchNuevo" styleClass="btn-primary" text="Nuevo" />
-            <Button fx:id="btnReasignar" onAction="#switchReasignar" styleClass="btn-secondary" text="Reasignar" />
-            <Button fx:id="btnEvaluar" onAction="#switchEvaluar" styleClass="btn-secondary" text="Evaluar" />
-         </children>
-      </HBox>
-      <TableView fx:id="tablaFormaciones" VBox.vgrow="ALWAYS">
-         <columns>
-            <TableColumn fx:id="colAlumno" text="Alumno" />
-            <TableColumn fx:id="colTutorCentro" text="Tutor del Centro" />
-			<TableColumn fx:id="colEmpresa" text="Empresa" />
-            <TableColumn fx:id="colTutorEmpresa" text="Tutor de Empresa" />
-            <TableColumn fx:id="colFechaIni" text="Fecha Inicio" />
-            <TableColumn fx:id="colFechaFin" text="Fecha Fin" />
-            <TableColumn fx:id="colPeriodo" text="Periodo" />
-            <TableColumn fx:id="colEstado" text="Estado" />
-         </columns>
-         <placeholder>
-            <Label text="No hay alumnos registrados." />
-         </placeholder>
-      </TableView>
-      <Button onAction="#exportar" styleClass="btn-primary" text="Exportar" />
-   </children>
+	<padding>
+		<Insets bottom="15" left="15" right="15" top="15" />
+	</padding>
+	<children>
+		<HBox spacing="10">
+			<children>
+				<HBox fx:id="boxNuevo" HBox.hgrow="ALWAYS">
+					<children>
+						<VBox spacing="10.0">
+							<children>
+								<HBox spacing="10.0">
+									<children>
+										<ComboBox fx:id="cbAlumno" promptText="Selecciona alumno" />
+										<ComboBox fx:id="cbTutorEmpresa" promptText="Selecciona tutor de empresa" />
+										<ComboBox fx:id="cbTutorCentro" promptText="Selecciona tutor de centro" />
+									</children>
+								</HBox>
+								<Label fx:id="lblAlumnoError" managed="false" styleClass="error-label" visible="false" />
+								<HBox spacing="10.0">
+									<children>
+										<ComboBox fx:id="cbPeriodo" prefWidth="150.0" promptText="Periodo" />
+										<DatePicker fx:id="dpIni" promptText="Fecha Inicio" />
+										<DatePicker fx:id="dpFin" promptText="Fecha Fin" />
+									</children>
+								</HBox>
+								<Label fx:id="lblDateError" managed="false" styleClass="error-label" visible="false" />
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<HBox fx:id="boxReasignar" managed="false" visible="false" HBox.hgrow="ALWAYS">
+					<children>
+						<VBox spacing="10.0">
+							<children>
+								<ComboBox fx:id="cbEditarFE" promptText="Selecciona FE" />
+								<HBox spacing="10.0">
+									<children>
+										<ComboBox fx:id="cbTutorEmpresaEdit" promptText="Selecciona tutor de empresa" />
+										<ComboBox fx:id="cbTutorCentroEdit" promptText="Selecciona tutor de centro" />
+									</children>
+								</HBox>
+								<Label fx:id="lblAlumnoErrorEdit" managed="false" styleClass="error-label" visible="false" />
+								<HBox spacing="10.0">
+									<children>
+										<ComboBox fx:id="cbPeriodoEdit" prefWidth="150.0" promptText="Periodo" />
+										<DatePicker fx:id="dpIniEdit" promptText="Fecha Inicio" />
+										<DatePicker fx:id="dpFinEdit" promptText="Fecha Fin" />
+									</children>
+								</HBox>
+								<Label fx:id="lblDateErrorEdit" managed="false" styleClass="error-label" visible="false" />
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<HBox fx:id="boxEvaluar" managed="false" visible="false" HBox.hgrow="ALWAYS">
+					<children>
+						<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+							<children>
+								<ComboBox fx:id="cbEvaluarFE" prefWidth="150.0" promptText="Selecciona FE" />
+								<VBox fx:id="boxEvaluaciones" spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+								</VBox>
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<HBox fx:id="boxFaltas" managed="false" visible="false" HBox.hgrow="ALWAYS">
+					<children>
+						<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
+							<children>
+								<ComboBox fx:id="cbFEFalta" prefWidth="250" promptText="Selecciona Alumno" />
+								<DatePicker fx:id="dpFechaFalta" />
+								<TextArea fx:id="txtDescripcionFalta" prefRowCount="4" promptText="Descripción de la falta..." />
+								<CheckBox fx:id="checkJustificada" text="Falta justificada" />
+								<HBox spacing="10">
+									<children>
+										<Button onAction="#switchFaltas" styleClass="btn-primary" text="Guardar Falta" />
+										<Button onAction="#switchNuevo" styleClass="btn-secondary" text="Cancelar" />
+									</children>
+								</HBox>
+							</children>
+						</VBox>
+					</children>
+				</HBox>
+				<Button fx:id="btnNuevo" onAction="#switchNuevo" styleClass="btn-primary" text="Nuevo" />
+				<Button fx:id="btnReasignar" onAction="#switchReasignar" styleClass="btn-secondary" text="Reasignar" />
+				<Button fx:id="btnEvaluar" onAction="#switchEvaluar" styleClass="btn-secondary" text="Evaluar" />
+				<Button fx:id="btnFaltas" onAction="#switchFaltas" styleClass="btn-secondary" text="Faltas" />
+			</children>
+		</HBox>
+		<TableView fx:id="tablaFormaciones" VBox.vgrow="ALWAYS">
+			<columns>
+				<TableColumn fx:id="colAlumno" text="Alumno" />
+				<TableColumn fx:id="colTutorCentro" text="Tutor del Centro" />
+				<TableColumn fx:id="colEmpresa" text="Empresa" />
+				<TableColumn fx:id="colTutorEmpresa" text="Tutor de Empresa" />
+				<TableColumn fx:id="colFechaIni" text="Fecha Inicio" />
+				<TableColumn fx:id="colFechaFin" text="Fecha Fin" />
+				<TableColumn fx:id="colPeriodo" text="Periodo" />
+				<TableColumn fx:id="colEstado" text="Estado" />
+			</columns>
+			<placeholder>
+				<Label text="No hay Formaciones en Empresa registradas." />
+			</placeholder>
+		</TableView>
+		<Button onAction="#exportar" styleClass="btn-primary" text="Exportar" />
+	</children>
 </VBox>

@@ -21,6 +21,7 @@ import com.simao.tarea3AD2024base.services.FormacionEmpresaService;
 import com.simao.tarea3AD2024base.services.Hasher;
 import com.simao.tarea3AD2024base.services.PersonaService;
 import com.simao.tarea3AD2024base.services.Session;
+import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -31,8 +32,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -96,6 +99,9 @@ public class GestionAlumnoController implements Initializable {
 
 	@FXML
 	private ComboBox<Curso> cbCursos;
+	
+	@FXML
+	private Label lblCursosError;
 
 	@FXML
 	private CheckBox checkEdad;
@@ -129,6 +135,9 @@ public class GestionAlumnoController implements Initializable {
 
 	@FXML
 	private ComboBox<Curso> cbEditCursos;
+	
+	@FXML
+	private Label lblEditCursosError;
 
 	@FXML
 	private CheckBox checkEditEdad;
@@ -218,6 +227,29 @@ public class GestionAlumnoController implements Initializable {
 		ObservableList<Alumno> datos = FXCollections.observableArrayList(alumnos);
 
 		colNombre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
+		colNombre.setCellFactory(_ -> new TableCell<>() {
+			private final Hyperlink link = new Hyperlink();
+			{
+				link.setOnAction(_ -> {
+					Alumno alumno = getTableView().getItems().get(getIndex());
+					abrirFichaAlumno(alumno);
+				});
+			}
+
+			@Override
+			protected void updateItem(String nombre, boolean empty) {
+				super.updateItem(nombre, empty);
+
+				if (empty || nombre == null) {
+					setGraphic(null);
+				} else {
+					link.setText(nombre);
+					setGraphic(link);
+				}
+			}
+
+		});
+
 		colEmail.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmail()));
 		colCurso.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getCurso().getNombre()));
 		colEdad.setCellValueFactory(
@@ -227,6 +259,11 @@ public class GestionAlumnoController implements Initializable {
 			tablaAlumnos.setItems(datos);
 			cbEditarAlumno.setItems(datos);
 		}
+	}
+
+	private void abrirFichaAlumno(Alumno al) {
+		session.setIdGest(al.getId());
+		stageManager.switchScene(FxmlView.ALUMNOFICHA);
 	}
 
 	/**
@@ -355,7 +392,7 @@ public class GestionAlumnoController implements Initializable {
 	 */
 	@FXML
 	private void guardar() {
-		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbCursos, txtUsername, lblUsernameError,
+		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbCursos, lblCursosError, txtUsername, lblUsernameError,
 				txtPassword, lblPasswordError, false))
 			return;
 
@@ -409,7 +446,7 @@ public class GestionAlumnoController implements Initializable {
 		if (alumno == null)
 			return;
 
-		if (validar(txtEditNombre, lblEditNombreError, txtEditEmail, lblEditEmailError, cbEditCursos, txtEditUsername,
+		if (validar(txtEditNombre, lblEditNombreError, txtEditEmail, lblEditEmailError, cbEditCursos, lblEditCursosError, txtEditUsername,
 				lblEditUsernameError, txtEditPassword, lblEditPasswordError, true))
 			return;
 
@@ -457,7 +494,7 @@ public class GestionAlumnoController implements Initializable {
 	 * @return true si hay errores de validación, false si los datos son válidos
 	 */
 	private boolean validar(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
-			ComboBox<Curso> cbCur, TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword,
+			ComboBox<Curso> cbCur, Label lblCursos, TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword,
 			boolean edit) {
 
 		Persona alEmail = peService.findByEmail(tfEmail.getText());
@@ -505,6 +542,19 @@ public class GestionAlumnoController implements Initializable {
 
 		boolean curso = cbCur.getValue() == null;
 		cbCur.pseudoClassStateChanged(EMPTY, curso);
+		
+		if (!curso) {
+			if (cbCur.getValue().getCoordinador() == null) {
+				curso = true;
+				lblCursos.setText("El curso debe tener un coordinador para asignarle alumnos.");
+			}
+			lblCursos.setManaged(curso);
+			lblCursos.setVisible(curso);
+
+		} else {
+			lblCursos.setManaged(false);
+			lblCursos.setVisible(false);
+		}
 
 		String txtUsername = tfUser.getText();
 		boolean username = txtUsername.isEmpty();

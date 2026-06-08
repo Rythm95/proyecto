@@ -31,7 +31,7 @@ import jakarta.persistence.OneToMany;
  * @see Profesor
  * @see Tutor
  * @see Periodo
- * @see EstadoFE 
+ * @see EstadoFE
  * @see EvaluacionRa
  */
 
@@ -65,6 +65,9 @@ public class FormacionEmpresa {
 
 	@OneToMany(mappedBy = "formacion", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<EvaluacionRa> evaluaciones = new ArrayList<>();
+
+	@OneToMany(mappedBy = "formacion", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Falta> faltas = new ArrayList<>();
 
 	public FormacionEmpresa() {
 	}
@@ -163,6 +166,19 @@ public class FormacionEmpresa {
 	public void addEvaluacion(EvaluacionRa evaluacion) {
 		evaluaciones.add(evaluacion);
 		evaluacion.setFormacion(this);
+	}
+
+	public List<Falta> getFaltas() {
+		return faltas;
+	}
+
+	public void setFaltas(List<Falta> faltas) {
+		this.faltas = faltas;
+	}
+	
+	public void addFalta(Falta falta) {
+		faltas.add(falta);
+		falta.setFormacion(this);
 	}
 
 	@Override

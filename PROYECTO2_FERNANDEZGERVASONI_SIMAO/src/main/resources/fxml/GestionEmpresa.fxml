@@ -68,7 +68,7 @@
             <TableColumn fx:id="colDireccion" text="Dirección" />
          </columns>
          <placeholder>
-            <Label text="No hay alumnos registrados." />
+            <Label text="No hay empresas registradas." />
          </placeholder>
       </TableView>
    </children>

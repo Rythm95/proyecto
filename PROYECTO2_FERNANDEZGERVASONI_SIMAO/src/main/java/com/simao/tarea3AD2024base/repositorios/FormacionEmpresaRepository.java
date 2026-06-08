@@ -20,9 +20,9 @@ public interface FormacionEmpresaRepository extends JpaRepository<FormacionEmpre
 
 	@Query("SELECT DISTINCT fe.alumno FROM FormacionEmpresa fe WHERE fe.tutorEmpresa.id = :tutorId")
 	List<Alumno> findAlumnosByTutorEmpresa(@Param("tutorId") Long tutorId);
-	
+
 	List<FormacionEmpresa> findByTutorEmpresa(Tutor tutor);
 
-	FormacionEmpresa findByAlumno(Alumno alumno);
-
+	@Query("SELECT DISTINCT	fe FROM	FormacionEmpresa fe	LEFT JOIN fetch fe.faltas WHERE fe.alumno = :alumno")
+	List<FormacionEmpresa> findByAlumnoWithFaltas(@Param("alumno") Alumno alumno);
 }

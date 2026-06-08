@@ -17,7 +17,7 @@
 			<padding>
 				<Insets bottom="10" left="20" right="20" top="10" />
 			</padding>
-			<Label styleClass="title" text="Tutor" />
+			<Label styleClass="title" text="Alumno" />
 			<HBox prefHeight="0.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
 			<Button onAction="#logout" styleClass="btn-primary"
 				text="Cerrar Sesión" />
