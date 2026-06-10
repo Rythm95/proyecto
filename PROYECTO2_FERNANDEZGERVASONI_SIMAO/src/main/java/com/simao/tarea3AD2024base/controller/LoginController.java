@@ -26,6 +26,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
+/**
+ * Clase LoginController.java
+ * 
+ * Gestiona el inicio de sesión de la aplicación.
+ */
 @Controller
 public class LoginController implements Initializable {
 
@@ -61,6 +66,12 @@ public class LoginController implements Initializable {
 		return usernameField.getText();
 	}
 
+	/**
+	 * Valida las credenciales de inicio de sesión y muestra la pantalla del perfil indicado.
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
 	@FXML
 	private void login(ActionEvent event) throws IOException {
 		session.clear();

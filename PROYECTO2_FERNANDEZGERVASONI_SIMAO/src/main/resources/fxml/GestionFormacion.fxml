@@ -60,6 +60,7 @@
 										<ComboBox fx:id="cbPeriodoEdit" prefWidth="150.0" promptText="Periodo" />
 										<DatePicker fx:id="dpIniEdit" promptText="Fecha Inicio" />
 										<DatePicker fx:id="dpFinEdit" promptText="Fecha Fin" />
+                              <CheckBox fx:id="checkNewFE" mnemonicParsing="false" text="Nueva FE" />
 									</children>
 								</HBox>
 								<Label fx:id="lblDateErrorEdit" managed="false" styleClass="error-label" visible="false" />

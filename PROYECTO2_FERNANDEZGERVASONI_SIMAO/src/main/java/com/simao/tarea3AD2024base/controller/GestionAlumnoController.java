@@ -261,6 +261,11 @@ public class GestionAlumnoController implements Initializable {
 		}
 	}
 
+	/**
+	 * Obtiene el id del alumno y cambia a la pantalla de Ficha del Alumno.
+	 * 
+	 * @param al
+	 */
 	private void abrirFichaAlumno(Alumno al) {
 		session.setIdGest(al.getId());
 		stageManager.switchScene(FxmlView.ALUMNOFICHA);

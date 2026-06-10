@@ -13,6 +13,11 @@ import com.simao.tarea3AD2024base.view.FxmlView;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 
+/**
+ * Clase ProfesoradoController.java
+ * 
+ * Gestiona las interacciones con la interfaz de los usuarios profesores.
+ */
 @Controller
 public class ProfesoradoController implements Initializable {
 
@@ -25,10 +30,20 @@ public class ProfesoradoController implements Initializable {
 
 	}
 
+	/**
+	 * Cierra la sesión actual y vuelve a la pantalla de inicio de sesión.
+	 *
+	 * @param event Evento lanzado desde la interfaz
+	 */
 	public void logout(ActionEvent event) {
 		stageManager.switchScene(FxmlView.LOGIN);
 	}
 
+	/**
+	 * Finaliza la aplicación.
+	 *
+	 * @param event Evento lanzado desde la interfaz
+	 */
 	public void exit(ActionEvent event) {
 		System.exit(0);
 	}

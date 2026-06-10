@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.simao.tarea3AD2024base.modelo.Alumno;
 import com.simao.tarea3AD2024base.modelo.EstadoFE;
 import com.simao.tarea3AD2024base.modelo.EstadoRA;
 import com.simao.tarea3AD2024base.modelo.EvaluacionRa;
+import com.simao.tarea3AD2024base.modelo.Falta;
 import com.simao.tarea3AD2024base.modelo.FormacionEmpresa;
 import com.simao.tarea3AD2024base.modelo.Perfil;
 import com.simao.tarea3AD2024base.modelo.Periodo;
@@ -31,21 +33,22 @@ import com.simao.tarea3AD2024base.modelo.Profesor;
 import com.simao.tarea3AD2024base.modelo.ResultadoAprendizaje;
 import com.simao.tarea3AD2024base.modelo.Tutor;
 import com.simao.tarea3AD2024base.services.AlumnoService;
+import com.simao.tarea3AD2024base.services.FaltaService;
 import com.simao.tarea3AD2024base.services.FormacionEmpresaService;
 import com.simao.tarea3AD2024base.services.ProfesorService;
 import com.simao.tarea3AD2024base.services.ResultadoAprendizajeService;
 import com.simao.tarea3AD2024base.services.Session;
 import com.simao.tarea3AD2024base.services.TutorService;
-import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -86,6 +89,9 @@ public class GestionFormacionController implements Initializable {
 
 	@Autowired
 	private ResultadoAprendizajeService raService;
+
+	@Autowired
+	private FaltaService faService;
 
 	@Autowired
 	private Session session;
@@ -137,6 +143,9 @@ public class GestionFormacionController implements Initializable {
 
 	@FXML
 	private Label lblDateErrorEdit;
+
+	@FXML
+	private CheckBox checkNewFE;
 
 	@FXML
 	private ComboBox<Alumno> cbAlumno;
@@ -193,7 +202,7 @@ public class GestionFormacionController implements Initializable {
 
 	@FXML
 	private Button btnFaltas;
-	
+
 	@FXML
 	private TextArea txtDescripcionFalta;
 
@@ -239,6 +248,8 @@ public class GestionFormacionController implements Initializable {
 				btnFaltas.setManaged(false);
 				btnEvaluar.setVisible(false);
 				btnEvaluar.setManaged(false);
+				boxNuevo.setVisible(false);
+				boxNuevo.setManaged(false);
 			}
 		}
 
@@ -247,6 +258,12 @@ public class GestionFormacionController implements Initializable {
 		});
 
 		cbEvaluarFE.getSelectionModel().selectedItemProperty().addListener((_, _, fe) -> {
+
+			if (fe == null) {
+				boxEvaluaciones.getChildren().clear();
+				return;
+			}
+
 			cargarEvaluaciones(fe.getId());
 		});
 
@@ -258,6 +275,13 @@ public class GestionFormacionController implements Initializable {
 		cbPeriodoEdit.getItems().addAll(Periodo.ORDINARIO, Periodo.EXTRAORIDINARIO);
 	}
 
+	/**
+	 * Carga todas las formaciones en empresa desde la base de datos y las muestra
+	 * en la interfaz.
+	 * 
+	 * Actualiza la tabla de visualización, los ComboBox relacionados, y configura
+	 * las columnas de la tabla con los valores correspondientes.
+	 */
 	private void cargarFormaciones() {
 		List<FormacionEmpresa> fes = new ArrayList<>();
 
@@ -268,13 +292,16 @@ public class GestionFormacionController implements Initializable {
 		else
 			fes = feService.findAll();
 
+		fes.removeIf(fe -> fe.getEstado() == EstadoFE.CANCELADA);
+
 		ObservableList<FormacionEmpresa> datos = FXCollections.observableArrayList(fes);
 
 		colAlumno.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getAlumno().getNombre()));
 		colTutorCentro
 				.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTutorCentro().getNombre()));
 		colEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmpresa().getNombre()));
-		colTutorEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTutorEmpresa().getNombre()));
+		colTutorEmpresa
+				.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTutorEmpresa().getNombre()));
 		colFechaIni.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFechaIni().toString()));
 		colFechaFin.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFechaFin().toString()));
 		colPeriodo.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getPeriodo().toString()));
@@ -288,6 +315,11 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Obtiene todos los alumnos desde la base de datos y los carga en el ComboBox
+	 * de Alumnos.
+	 * 
+	 */
 	private void cargarAlumnos() {
 		List<Alumno> alumnos = alService.findAll();
 		ObservableList<Alumno> datos = FXCollections.observableArrayList(alumnos);
@@ -297,6 +329,11 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Obtiene todos los tutores desde la base de datos y los carga en los ComboBox
+	 * relacionados.
+	 * 
+	 */
 	private void cargarTutores() {
 		List<Tutor> tutores = tuService.findAll();
 		ObservableList<Tutor> datos = FXCollections.observableArrayList(tutores);
@@ -307,6 +344,11 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Obtiene todos los profesores desde la base de datos y los carga en los
+	 * ComboBox relacionados.
+	 * 
+	 */
 	private void cargarProfes() {
 		List<Profesor> profes = prService.findAll();
 		ObservableList<Profesor> datos = FXCollections.observableArrayList(profes);
@@ -317,6 +359,12 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de creación de FEs.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchNuevo() {
 		if (!boxNuevo.isVisible()) {
@@ -327,6 +375,12 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de reasignación de FEs.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchReasignar() {
 		if (!boxReasignar.isVisible()) {
@@ -337,6 +391,12 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de evaluacion de FEs.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchEvaluar() {
 		if (!boxEvaluar.isVisible()) {
@@ -347,6 +407,12 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Alterna la visivilidad del menú de registro de faltas.
+	 * 
+	 * Si el menú no está visible, lo muestra. Si ya está visible, ejecuta la
+	 * operación.
+	 */
 	@FXML
 	private void switchFaltas() {
 		if (!boxFaltas.isVisible()) {
@@ -357,6 +423,15 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Da a un botón un estilo primario y le da uno secundario al resto.
+	 * 
+	 * El botón activo recibe el estilo "btn-primary", mientras que los botones
+	 * inactivos reciben el estilo "btn-secondary".
+	 *
+	 * @param activo    Botón que se marcará como primario
+	 * @param inactivos Botones que se marcarán como secundarios
+	 */
 	private void switchButton(Button activo, Button... inactivos) {
 
 		activo.getStyleClass().removeAll("btn-secondary", "btn-primary");
@@ -368,6 +443,15 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Muestra un HBox y oculta el resto.
+	 * 
+	 * El HBox activo pasa a ser visible y los inactivos se ocultan y dejan de
+	 * ocupar espacio en la interfaz.
+	 *
+	 * @param activo    HBox que se mostrará
+	 * @param inactivos HBox que se ocultarán
+	 */
 	private void switchBox(HBox activo, HBox... inactivos) {
 
 		activo.setManaged(true);
@@ -379,6 +463,13 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Valida y guarda una nueva FE.
+	 * 
+	 * Si la validación es correcta, se crea una nueva FormacionEmpresa, se guarda
+	 * en la base de datos, se actualiza la lista de FEs y se cambia al menú de
+	 * búsqueda.
+	 */
 	@FXML
 	private void guardar() {
 		if (validar(cbAlumno, lblAlumnoError, cbTutorCentro, cbTutorEmpresa, cbPeriodo, dpIni, dpFin, lblDateError,
@@ -401,9 +492,6 @@ public class GestionFormacionController implements Initializable {
 
 		List<ResultadoAprendizaje> ras = raService.findByCurso(cbAlumno.getValue().getCurso());
 
-		System.out.println(ras.size());
-		System.out.println(ras.isEmpty());
-		System.out.println("\\\\");
 		for (ResultadoAprendizaje ra : ras) {
 
 			EvaluacionRa ev = new EvaluacionRa();
@@ -413,7 +501,6 @@ public class GestionFormacionController implements Initializable {
 			ev.setResultadoAprendizaje(ra);
 			fe.addEvaluacion(ev);
 		}
-		System.out.println("//");
 
 		feService.save(fe);
 
@@ -421,6 +508,11 @@ public class GestionFormacionController implements Initializable {
 		limpiarForm(cbAlumno, cbTutorCentro, cbTutorEmpresa, cbPeriodo, dpIni, dpFin);
 	}
 
+	/**
+	 * Carga los datos de una FE en el formulario de edición.
+	 *
+	 * @param fe FormacionEmpresa cuyos datos se cargarán en el formulario.
+	 */
 	private void cargarEditar(FormacionEmpresa fe) {
 		if (fe != null) {
 			cbTutorEmpresaEdit.setValue(fe.getTutorEmpresa());
@@ -432,6 +524,13 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Valida y edita una FE.
+	 * 
+	 * Si la validación es correcta, actualiza la entidad FormacionEmpresa
+	 * seleccionada en la base de datos, se actualiza la lista de empresas y se
+	 * cambia al menú de búsqueda.
+	 */
 	private void editar() {
 		FormacionEmpresa fe = cbEditarFE.getValue();
 		if (fe == null)
@@ -441,24 +540,85 @@ public class GestionFormacionController implements Initializable {
 				dpFinEdit, lblDateErrorEdit, true))
 			return;
 
-		fe.setTutorCentro(cbTutorCentroEdit.getValue());
-		fe.setEmpresa(cbTutorEmpresaEdit.getValue().getEmpresa());
-		fe.setTutorEmpresa(cbTutorEmpresaEdit.getValue());
-		fe.setPeriodo(cbPeriodoEdit.getValue());
-		fe.setFechaIni(dpIniEdit.getValue());
-		fe.setFechaFin(dpFinEdit.getValue());
-		if (dpIni.getValue().isAfter(LocalDate.now()))
-			fe.setEstado(EstadoFE.ACTIVA);
-		else if (dpFin.getValue().isAfter(LocalDate.now()))
-			fe.setEstado(EstadoFE.FINALIZADA);
+		if (checkNewFE.isSelected()) {
+			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+			alert.setTitle("Crear nueva FE");
+			alert.setHeaderText("Se creará una nueva Formación en Empresa");
+			alert.setContentText(
+					"Si selecciona \"Nueva FE\", la FE actual será marcada como CANCELADA y se creará una nueva FE para el alumno seleccionado con los datos introducidos.\n¿Desea continuar?");
+			alert.setResizable(true);
 
-		feService.save(fe);
+			Optional<ButtonType> result = alert.showAndWait();
+
+			if (result.isEmpty() || result.get() != ButtonType.OK) {
+				return;
+			}
+
+			fe.setEstado(EstadoFE.CANCELADA);
+			feService.save(fe);
+
+			FormacionEmpresa nfe = new FormacionEmpresa();
+
+			nfe.setAlumno(fe.getAlumno());
+			nfe.setTutorCentro(cbTutorCentroEdit.getValue());
+			nfe.setEmpresa(cbTutorEmpresaEdit.getValue().getEmpresa());
+			nfe.setTutorEmpresa(cbTutorEmpresaEdit.getValue());
+			nfe.setPeriodo(cbPeriodoEdit.getValue());
+			nfe.setFechaIni(dpIniEdit.getValue());
+			nfe.setFechaFin(dpFinEdit.getValue());
+			if (dpIniEdit.getValue().isAfter(LocalDate.now())) {
+				nfe.setEstado(EstadoFE.PENDIENTE);
+			} else if (dpFinEdit.getValue().isBefore(LocalDate.now())) {
+				nfe.setEstado(EstadoFE.FINALIZADA);
+			} else {
+				nfe.setEstado(EstadoFE.ACTIVA);
+			}
+
+			checkNewFE.setSelected(false);
+			feService.save(nfe);
+
+		} else {
+
+			fe.setTutorCentro(cbTutorCentroEdit.getValue());
+			fe.setEmpresa(cbTutorEmpresaEdit.getValue().getEmpresa());
+			fe.setTutorEmpresa(cbTutorEmpresaEdit.getValue());
+			fe.setPeriodo(cbPeriodoEdit.getValue());
+			fe.setFechaIni(dpIniEdit.getValue());
+			fe.setFechaFin(dpFinEdit.getValue());
+			if (dpIniEdit.getValue().isAfter(LocalDate.now())) {
+				fe.setEstado(EstadoFE.PENDIENTE);
+			} else if (dpFinEdit.getValue().isBefore(LocalDate.now())) {
+				fe.setEstado(EstadoFE.FINALIZADA);
+			} else {
+				fe.setEstado(EstadoFE.ACTIVA);
+			}
+
+			feService.save(fe);
+		}
 
 		cargarFormaciones();
-		limpiarForm(cbAlumno, cbTutorCentro, cbTutorEmpresa, cbPeriodo, dpIni, dpFin);
+		limpiarForm(cbAlumno, cbTutorCentroEdit, cbTutorEmpresaEdit, cbPeriodoEdit, dpIniEdit, dpFinEdit);
 
 	}
 
+	/**
+	 * Valida los datos de una FE antes de su creación o edición.
+	 * 
+	 * Validaciones: - El alumno no puede estar asociado a una FE previamente -
+	 * Ningún campo puede estar vacío - La fecha final no puede ser anterior a la
+	 * fecha inicial
+	 * 
+	 * @param cbAlumno
+	 * @param lblAlumnoError
+	 * @param cbProfe
+	 * @param cbTutor
+	 * @param cbPeriodo
+	 * @param dpIni
+	 * @param dpFin
+	 * @param lblDateError
+	 * @param edit
+	 * @return
+	 */
 	private boolean validar(ComboBox<Alumno> cbAlumno, Label lblAlumnoError, ComboBox<Profesor> cbProfe,
 			ComboBox<Tutor> cbTutor, ComboBox<Periodo> cbPeriodo, DatePicker dpIni, DatePicker dpFin,
 			Label lblDateError, boolean edit) {
@@ -520,6 +680,17 @@ public class GestionFormacionController implements Initializable {
 		return alumno || profe || tutor || periodo || fechas;
 	}
 
+	/**
+	 * Limpia la información introducida en los campos del formulario de creación o
+	 * edición de la FE.
+	 * 
+	 * @param cbAlumno
+	 * @param cbProfe
+	 * @param cbTutor
+	 * @param cbPeriodo
+	 * @param dpIni
+	 * @param dpFin
+	 */
 	private void limpiarForm(ComboBox<Alumno> cbAlumno, ComboBox<Profesor> cbProfe, ComboBox<Tutor> cbTutor,
 			ComboBox<Periodo> cbPeriodo, DatePicker dpIni, DatePicker dpFin) {
 		cbAlumno.getSelectionModel().clearSelection();
@@ -545,6 +716,11 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Carga las evaluaciones de la FE desde la base de datos.
+	 * 
+	 * @param feId
+	 */
 	private void cargarEvaluaciones(Long feId) {
 		FormacionEmpresa fe = feService.findCompleta(feId);
 
@@ -593,11 +769,27 @@ public class GestionFormacionController implements Initializable {
 		}
 	}
 
+	/**
+	 * Guarda las evaluaciones de los RAs de la FE en la base de datos.
+	 */
 	private void evaluar() {
-		FormacionEmpresa feSelected = cbEvaluarFE.getValue();
+		FormacionEmpresa feSelected = feService.findCompleta(cbEvaluarFE.getValue().getId());
 
-		if (feSelected == null)
+		if (feSelected == null) {
 			return;
+		}
+
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Evaluar FE");
+		alert.setContentText(
+				"Al evaluar una FE, será marcada como FINALIZADA y no se podrán modificar sus datos. ¿Desea continuar?");
+		alert.setResizable(true);
+
+		Optional<ButtonType> result = alert.showAndWait();
+
+		if (result.isEmpty() || result.get() != ButtonType.OK) {
+			return;
+		}
 
 		FormacionEmpresa fe = feService.findCompleta(feSelected.getId());
 
@@ -631,6 +823,9 @@ public class GestionFormacionController implements Initializable {
 		cargarFormaciones();
 	}
 
+	/*
+	 * Exporta todos los datos de una FE seleccionada a un PDF.
+	 */
 	@FXML
 	private void exportar() throws Exception {
 
@@ -680,15 +875,54 @@ public class GestionFormacionController implements Initializable {
 		doc.close();
 	}
 
+	/**
+	 * Valida y registra una falta.
+	 * 
+	 * Si la validación es correcta, se crea una nueva Falta y se guarda en la base
+	 * de datos.
+	 */
 	private void registrarFalta() {
+		if (validarFalta()) {
+			return;
+		}
 
+		Falta falta = new Falta();
+		falta.setFormacion(cbFEFalta.getValue());
+		falta.setFecha(dpFechaFalta.getValue());
+		falta.setDescripcion(txtDescripcionFalta.getText());
+		falta.setJustificada(checkJustificada.isSelected());
+
+		faService.save(falta);
+		clearFaltaForm();
 	}
 
-	public void logout(ActionEvent event) {
-		stageManager.switchScene(FxmlView.LOGIN);
+	/**
+	 * Valida los datos de una Falta antes de su creación.
+	 * 
+	 * Validaciones: Ningún campo puede estar vacío
+	 */
+	private boolean validarFalta() {
+
+		boolean fe = cbFEFalta.getValue() == null;
+		cbFEFalta.pseudoClassStateChanged(EMPTY, fe);
+
+		boolean fecha = dpFechaFalta.getValue() == null;
+		dpFechaFalta.pseudoClassStateChanged(EMPTY, fecha);
+
+		boolean desc = txtDescripcionFalta.getText() == null;
+		txtDescripcionFalta.pseudoClassStateChanged(EMPTY, desc);
+
+		return fe || fecha || desc;
 	}
 
-	public void exit(ActionEvent event) {
-		System.exit(0);
+	/**
+	 * Limpia la información introducida en los campos del formulario de registro de
+	 * Faltas.
+	 */
+	private void clearFaltaForm() {
+		cbFEFalta.setValue(null);
+		dpFechaFalta.setValue(null);
+		txtDescripcionFalta.clear();
+		checkJustificada.setSelected(false);
 	}
 }

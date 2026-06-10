@@ -21,8 +21,8 @@ import jakarta.persistence.OneToMany;
  * {@link Tutor} de empresa, en un {@link Periodo} de prácticas, durante unas
  * fechas.
  * 
- * También se almacenan el {@link EstadoFE} de la formación profesional y las
- * {@link EvaluacionRa} de los RAs de los módulos del grupo del alumno.
+ * También se almacenan el {@link EstadoFE} de la formación profesional, las
+ * {@link EvaluacionRa} de los RAs de los módulos del grupo del alumno y sus {@link Falta}.
  * 
  * @author Simao Fernández Gervasoni
  * @version 1.0
@@ -33,6 +33,7 @@ import jakarta.persistence.OneToMany;
  * @see Periodo
  * @see EstadoFE
  * @see EvaluacionRa
+ * @see Falta
  */
 
 @Entity

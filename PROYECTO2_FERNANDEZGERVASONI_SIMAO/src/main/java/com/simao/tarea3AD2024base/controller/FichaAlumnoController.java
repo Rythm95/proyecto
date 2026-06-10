@@ -29,9 +29,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
 
 /**
- * Clase GestionAlumnoController.java
+ * Clase FichaAlumnoController.java
  * 
- * Gestiona las interacciones con la interfaz de gestión de alumnos.
+ * Muestra toda la información del alumno en sesión, junto con la de sus FEs.
  */
 @Controller
 public class FichaAlumnoController implements Initializable {
@@ -69,16 +69,16 @@ public class FichaAlumnoController implements Initializable {
 
 	@FXML
 	private TableView<Falta> tablaFaltas;
-	
+
 	@FXML
 	private TableColumn<Falta, String> colFechaFalta;
-	
+
 	@FXML
 	private TableColumn<Falta, String> colDescripcionFalta;
-	
+
 	@FXML
 	private TableColumn<Falta, String> colJustificada;
-	
+
 	@FXML
 	private TableColumn<Falta, String> colJustificante;
 
@@ -100,14 +100,24 @@ public class FichaAlumnoController implements Initializable {
 
 	}
 
+	/**
+	 * Carga los datos de un alumno y los muestra en la interfáz.
+	 * 
+	 * @param al
+	 */
 	private void cargarDatos(Alumno al) {
 		lblNombre.setText(al.getNombre());
 		lblEmail.setText(al.getEmail());
-		lblEdad.setText(al.isMayoriaEdad() ? "Mayor de edad" : "Menor de edad");
+		lblEdad.setText(al.isMayoriaEdad() ? "Sí" : "No");
 		lblCurso.setText(al.getCurso().getNombre());
 		lblCoordinador.setText(al.getCurso().getCoordinador().getNombre());
 	}
 
+	/**
+	 * Carga la información de una FE del alumno en una card.
+	 * 
+	 * @param fe
+	 */
 	private void cargarFEs(FormacionEmpresa fe) {
 		VBox card = new VBox(5);
 
@@ -126,21 +136,33 @@ public class FichaAlumnoController implements Initializable {
 		boxFormaciones.getChildren().add(card);
 	}
 
+	/**
+	 * Carga todas las Faltas de una FE seleccionada y los muestra en la interfaz.
+	 * 
+	 * Actualiza la tabla de visualización y configura las columnas de la tabla con
+	 * los valores correspondientes.
+	 * 
+	 * @param fe
+	 */
 	private void cargarFaltas(FormacionEmpresa fe) {
-		if (fe == null || fe.getFaltas() == null) {
+		if (fe == null || fe.getFaltas().isEmpty()) {
 			tablaFaltas.getItems().clear();
 			tablaFaltas.setPlaceholder(new Label("No hay faltas registradas para esta FE."));
 			return;
 		}
-		
+
 		ObservableList<Falta> datos = FXCollections.observableArrayList(fe.getFaltas());
 		tablaFaltas.setItems(datos);
 		colFechaFalta.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getFecha().toString()));
 		colDescripcionFalta.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDescripcion()));
-		colJustificada.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().isJustificada()? "Justificada":"Injustificada"));
+		colJustificada.setCellValueFactory(
+				data -> new SimpleStringProperty(data.getValue().isJustificada() ? "Justificada" : "Injustificada"));
 		colJustificante.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getJustificante()));
 	}
 
+	/**
+	 * Vuelve a la pantalla de gestión según el perfil de la sesión.
+	 */
 	@FXML
 	private void goBack() {
 		Perfil p = session.getPerfil();

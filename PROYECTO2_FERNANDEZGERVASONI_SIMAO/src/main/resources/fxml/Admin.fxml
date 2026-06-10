@@ -254,7 +254,7 @@
 										<HBox spacing="10">
 											<children>
 												<Button onAction="#switchNuevoRA"
-													styleClass="btn-primary" text="Guardar Cambios" />
+													styleClass="btn-primary" text="Guardar" />
 												<Button onAction="#switchBuscarRA"
 													styleClass="btn-secondary" text="Cancelar" />
 											</children>
