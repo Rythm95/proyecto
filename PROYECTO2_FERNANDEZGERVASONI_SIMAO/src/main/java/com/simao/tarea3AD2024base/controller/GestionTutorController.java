@@ -490,9 +490,12 @@ public class GestionTutorController implements Initializable {
 		}
 
 		String txtPassword = tfPassword.getText();
-		boolean password = txtPassword.isEmpty();
+		boolean password = false;
+		if (!edit) {
+			password = txtPassword.isEmpty();
+		}
 		tfPassword.pseudoClassStateChanged(EMPTY, password);
-		if (!password) {
+		if (!txtPassword.isEmpty()) {
 			if (txtPassword.length() <= 2) {
 				password = true;
 				lblPassword.setText("La contraseña debe contener más de 2 caracteres.");

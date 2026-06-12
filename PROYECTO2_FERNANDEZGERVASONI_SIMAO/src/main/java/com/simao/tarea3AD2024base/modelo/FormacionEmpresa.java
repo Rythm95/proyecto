@@ -22,7 +22,8 @@ import jakarta.persistence.OneToMany;
  * fechas.
  * 
  * También se almacenan el {@link EstadoFE} de la formación profesional, las
- * {@link EvaluacionRa} de los RAs de los módulos del grupo del alumno y sus {@link Falta}.
+ * {@link EvaluacionRa} de los RAs de los módulos del grupo del alumno y sus
+ * {@link Falta}.
  * 
  * @author Simao Fernández Gervasoni
  * @version 1.0
@@ -69,6 +70,8 @@ public class FormacionEmpresa {
 
 	@OneToMany(mappedBy = "formacion", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Falta> faltas = new ArrayList<>();
+
+	private String valoracion;
 
 	public FormacionEmpresa() {
 	}
@@ -176,10 +179,18 @@ public class FormacionEmpresa {
 	public void setFaltas(List<Falta> faltas) {
 		this.faltas = faltas;
 	}
-	
+
 	public void addFalta(Falta falta) {
 		faltas.add(falta);
 		falta.setFormacion(this);
+	}
+
+	public String getValoracion() {
+		return valoracion;
+	}
+
+	public void setValoracion(String valoracion) {
+		this.valoracion = valoracion;
 	}
 
 	@Override

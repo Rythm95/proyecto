@@ -102,6 +102,12 @@ public class AdminController implements Initializable {
 	private TextField txtNombreModulo;
 
 	@FXML
+	private ComboBox<Curso> cbCurso;
+
+	@FXML
+	private ComboBox<Profesor> cbProfesorModulo;
+
+	@FXML
 	private Button btnCrearModulo;
 
 	@FXML
@@ -201,10 +207,10 @@ public class AdminController implements Initializable {
 	private TableColumn<Curso, String> colCoordinador;
 
 	@FXML
-	private ComboBox<Curso> cbCurso;
+	private ComboBox<Curso> cbCursoEdit;
 
 	@FXML
-	private ComboBox<Profesor> cbProfesorModulo;
+	private ComboBox<Profesor> cbProfesorModuloEdit;
 
 	@FXML
 	private HBox boxEdicionModulo;
@@ -338,8 +344,9 @@ public class AdminController implements Initializable {
 		if (!profes.isEmpty()) {
 			tablaProfes.setItems(datos);
 			cbCoordinador.setItems(datos);
-			cbProfesorModulo.setItems(datos);
+			cbProfesorModuloEdit.setItems(datos);
 			cbProfeEditar.setItems(datos);
+			cbProfesorModulo.setItems(datos);
 		}
 	}
 
@@ -354,6 +361,7 @@ public class AdminController implements Initializable {
 		List<Curso> cursos = cuService.findAll();
 		ObservableList<Curso> datos = FXCollections.observableArrayList(cursos);
 
+		cbCursoEdit.setItems(datos);
 		cbCurso.setItems(datos);
 
 		if (!cursos.isEmpty()) {
@@ -775,7 +783,8 @@ public class AdminController implements Initializable {
 		profe.setNombre(txtEditNombreProfe.getText());
 		profe.setEmail(txtEditEmailProfe.getText());
 		profe.setUser(txtEditUsernameProfe.getText());
-		profe.setPassword(Hasher.md5(txtEditPasswordProfe.getText()));
+		if (!txtEditPasswordProfe.getText().isBlank())
+			profe.setPassword(Hasher.md5(txtEditPasswordProfe.getText()));
 
 		prService.update(profe);
 
@@ -885,9 +894,12 @@ public class AdminController implements Initializable {
 		}
 
 		String txtPassword = tfPassword.getText();
-		boolean password = txtPassword.isEmpty();
+		boolean password = false;
+		if (!edit) {
+			password = txtPassword.isEmpty();
+		}
 		tfPassword.pseudoClassStateChanged(EMPTY, password);
-		if (!password) {
+		if (!txtPassword.isEmpty()) {
 			if (txtPassword.length() <= 2) {
 				password = true;
 				lblPassword.setText("La contraseña debe contener más de 2 caracteres.");
@@ -993,6 +1005,9 @@ public class AdminController implements Initializable {
 	private void guardarModulo() {
 
 		String txtNombre = txtNombreModulo.getText();
+		Curso curso = cbCurso.getValue();
+		Profesor profe = cbProfesorModulo.getValue();
+
 		boolean nombre = txtNombre.isEmpty();
 		txtNombreModulo.pseudoClassStateChanged(EMPTY, nombre);
 
@@ -1012,15 +1027,26 @@ public class AdminController implements Initializable {
 			lblNombreModuloError.setVisible(false);
 		}
 
-		if (nombre)
+		cbCurso.pseudoClassStateChanged(EMPTY, curso == null);
+		cbProfesorModulo.pseudoClassStateChanged(EMPTY, profe == null);
+
+		if (nombre || curso == null || profe == null) {
 			return;
+		}
 
 		Modulo modulo = new Modulo();
 		modulo.setNombre(txtNombre);
-		moService.save(modulo);
-
+		Modulo mod = moService.save(modulo);
+		
+		ModuloCurso mc = new ModuloCurso();
+		
+		mc.setModulo(mod);
+		mc.setCurso(curso);
+		mc.setProfesor(profe);
+		
+		mcService.save(mc);
+		
 		txtNombreModulo.clear();
-
 		cargarModulos();
 	}
 
@@ -1034,11 +1060,11 @@ public class AdminController implements Initializable {
 	private void asignarModulo() {
 
 		Modulo modulo = tablaModulos.getSelectionModel().getSelectedItem();
-		Curso curso = cbCurso.getValue();
-		Profesor profe = cbProfesorModulo.getValue();
+		Curso curso = cbCursoEdit.getValue();
+		Profesor profe = cbProfesorModuloEdit.getValue();
 
-		cbCurso.pseudoClassStateChanged(EMPTY, curso == null);
-		cbProfesorModulo.pseudoClassStateChanged(EMPTY, profe == null);
+		cbCursoEdit.pseudoClassStateChanged(EMPTY, curso == null);
+		cbProfesorModuloEdit.pseudoClassStateChanged(EMPTY, profe == null);
 
 		if (modulo == null || curso == null || profe == null) {
 			return;

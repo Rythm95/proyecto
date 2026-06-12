@@ -68,6 +68,11 @@
 			<artifactId>componentes</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.simao</groupId>
+			<artifactId>limitedtextfield</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

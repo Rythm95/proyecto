@@ -39,6 +39,7 @@ import com.simao.tarea3AD2024base.services.ProfesorService;
 import com.simao.tarea3AD2024base.services.ResultadoAprendizajeService;
 import com.simao.tarea3AD2024base.services.Session;
 import com.simao.tarea3AD2024base.services.TutorService;
+import com.simao.tarea3AD2024base.view.FxmlView;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -52,8 +53,10 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -177,6 +180,12 @@ public class GestionFormacionController implements Initializable {
 	private List<EvaluacionRow> evaluacionRows = new ArrayList<>();
 
 	@FXML
+	private Label lblEval;
+
+	@FXML
+	private Label lblErrorFalta;
+
+	@FXML
 	private VBox boxEvaluaciones;
 
 	@FXML
@@ -297,6 +306,28 @@ public class GestionFormacionController implements Initializable {
 		ObservableList<FormacionEmpresa> datos = FXCollections.observableArrayList(fes);
 
 		colAlumno.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getAlumno().getNombre()));
+		colAlumno.setCellFactory(_ -> new TableCell<>() {
+			private final Hyperlink link = new Hyperlink();
+			{
+				link.setOnAction(_ -> {
+					Alumno alumno = getTableView().getItems().get(getIndex()).getAlumno();
+					abrirFichaAlumno(alumno);
+				});
+			}
+
+			@Override
+			protected void updateItem(String nombre, boolean empty) {
+				super.updateItem(nombre, empty);
+
+				if (empty || nombre == null) {
+					setGraphic(null);
+				} else {
+					link.setText(nombre);
+					setGraphic(link);
+				}
+			}
+
+		});
 		colTutorCentro
 				.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTutorCentro().getNombre()));
 		colEmpresa.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getEmpresa().getNombre()));
@@ -313,6 +344,16 @@ public class GestionFormacionController implements Initializable {
 			cbEvaluarFE.setItems(datos);
 			cbFEFalta.setItems(datos);
 		}
+	}
+
+	/**
+	 * Obtiene el id del alumno y cambia a la pantalla de Ficha del Alumno.
+	 * 
+	 * @param al
+	 */
+	private void abrirFichaAlumno(Alumno al) {
+		session.setIdGest(al.getId());
+		stageManager.switchScene(FxmlView.ALUMNOFICHA);
 	}
 
 	/**
@@ -485,18 +526,16 @@ public class GestionFormacionController implements Initializable {
 		fe.setPeriodo(cbPeriodo.getValue());
 		fe.setFechaIni(dpIni.getValue());
 		fe.setFechaFin(dpFin.getValue());
-		if (dpIni.getValue().isAfter(LocalDate.now()))
+		if (dpIni.getValue().isBefore(LocalDate.now()))
+			fe.setEstado(EstadoFE.PENDIENTE);
+		else
 			fe.setEstado(EstadoFE.ACTIVA);
-		else if (dpFin.getValue().isAfter(LocalDate.now()))
-			fe.setEstado(EstadoFE.FINALIZADA);
 
 		List<ResultadoAprendizaje> ras = raService.findByCurso(cbAlumno.getValue().getCurso());
 
 		for (ResultadoAprendizaje ra : ras) {
 
 			EvaluacionRa ev = new EvaluacionRa();
-			System.out.println("Llega");
-			System.out.println(ra.getCodigo());
 
 			ev.setResultadoAprendizaje(ra);
 			fe.addEvaluacion(ev);
@@ -520,6 +559,8 @@ public class GestionFormacionController implements Initializable {
 			cbPeriodoEdit.setValue(fe.getPeriodo());
 			dpIniEdit.setValue(fe.getFechaIni());
 			dpFinEdit.setValue(fe.getFechaFin());
+			lblAlumnoErrorEdit.setVisible(false);
+			lblAlumnoErrorEdit.setManaged(false);
 
 		}
 	}
@@ -535,6 +576,16 @@ public class GestionFormacionController implements Initializable {
 		FormacionEmpresa fe = cbEditarFE.getValue();
 		if (fe == null)
 			return;
+
+		if (fe.getEstado() == EstadoFE.FINALIZADA) {
+			lblAlumnoErrorEdit.setText("Esta FE está finalizada y no se puede modificar.");
+			lblAlumnoErrorEdit.setVisible(true);
+			lblAlumnoErrorEdit.setManaged(true);
+			return;
+		} else {
+			lblAlumnoErrorEdit.setVisible(false);
+			lblAlumnoErrorEdit.setManaged(false);
+		}
 
 		if (validar(null, lblAlumnoErrorEdit, cbTutorCentroEdit, cbTutorEmpresaEdit, cbPeriodoEdit, dpIniEdit,
 				dpFinEdit, lblDateErrorEdit, true))
@@ -566,13 +617,10 @@ public class GestionFormacionController implements Initializable {
 			nfe.setPeriodo(cbPeriodoEdit.getValue());
 			nfe.setFechaIni(dpIniEdit.getValue());
 			nfe.setFechaFin(dpFinEdit.getValue());
-			if (dpIniEdit.getValue().isAfter(LocalDate.now())) {
-				nfe.setEstado(EstadoFE.PENDIENTE);
-			} else if (dpFinEdit.getValue().isBefore(LocalDate.now())) {
-				nfe.setEstado(EstadoFE.FINALIZADA);
-			} else {
-				nfe.setEstado(EstadoFE.ACTIVA);
-			}
+			if (dpIni.getValue().isBefore(LocalDate.now()))
+				fe.setEstado(EstadoFE.PENDIENTE);
+			else
+				fe.setEstado(EstadoFE.ACTIVA);
 
 			checkNewFE.setSelected(false);
 			feService.save(nfe);
@@ -585,13 +633,10 @@ public class GestionFormacionController implements Initializable {
 			fe.setPeriodo(cbPeriodoEdit.getValue());
 			fe.setFechaIni(dpIniEdit.getValue());
 			fe.setFechaFin(dpFinEdit.getValue());
-			if (dpIniEdit.getValue().isAfter(LocalDate.now())) {
+			if (dpIni.getValue().isBefore(LocalDate.now()))
 				fe.setEstado(EstadoFE.PENDIENTE);
-			} else if (dpFinEdit.getValue().isBefore(LocalDate.now())) {
-				fe.setEstado(EstadoFE.FINALIZADA);
-			} else {
+			else
 				fe.setEstado(EstadoFE.ACTIVA);
-			}
 
 			feService.save(fe);
 		}
@@ -724,12 +769,12 @@ public class GestionFormacionController implements Initializable {
 	private void cargarEvaluaciones(Long feId) {
 		FormacionEmpresa fe = feService.findCompleta(feId);
 
-		if (fe == null)
+		if (fe == null) {
 			return;
+		}
 
 		boxEvaluaciones.getChildren().clear();
 		evaluacionRows.clear();
-
 		for (EvaluacionRa ev : fe.getEvaluaciones()) {
 
 			HBox fila = new HBox(15);
@@ -779,6 +824,29 @@ public class GestionFormacionController implements Initializable {
 			return;
 		}
 
+		if (feSelected.getEstado() == EstadoFE.FINALIZADA) {
+			lblEval.setVisible(true);
+			lblEval.setManaged(true);
+			lblEval.setText("Esta FE está finalizada y no se puede modificar.");
+			return;
+		} else {
+			lblEval.setVisible(false);
+			lblEval.setManaged(false);
+			lblEval.setText("Selecciona una opción en cada RA para evaluar la formación.");
+		}
+
+		for (EvaluacionRow row : evaluacionRows) {
+			if (row.group.getSelectedToggle() == null) {
+
+				lblEval.setVisible(true);
+				lblEval.setManaged(true);
+				return;
+			}
+		}
+
+		lblEval.setVisible(false);
+		lblEval.setManaged(false);
+
 		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Evaluar FE");
 		alert.setContentText(
@@ -808,18 +876,20 @@ public class GestionFormacionController implements Initializable {
 
 			switch (selected.getText()) {
 
-			case "Superado" -> ev.setEstado(EstadoRA.SUPERADO);
-
-			case "No superado" -> ev.setEstado(EstadoRA.NO_SUPERADO);
-
-			case "No aplica" -> ev.setEstado(EstadoRA.NO_APLICA);
+			case "Superado":
+				ev.setEstado(EstadoRA.SUPERADO);
+				break;
+			case "No superado":
+				ev.setEstado(EstadoRA.NO_SUPERADO);
+				break;
+			case "No aplica":
+				ev.setEstado(EstadoRA.NO_APLICA);
+				break;
 			}
 		}
 
 		fe.setEstado(EstadoFE.FINALIZADA);
-
 		feService.save(fe);
-
 		cargarFormaciones();
 	}
 
@@ -860,16 +930,18 @@ public class GestionFormacionController implements Initializable {
 		doc.add(new Paragraph("Fecha Fin: " + fe.getFechaFin()));
 		doc.add(new Paragraph("Estado: " + fe.getEstado()));
 
-		doc.add(new Paragraph(" "));
-		doc.add(new Paragraph("EVALUACIONES RA", titleFont));
-		doc.add(new Paragraph(" "));
+		if (!fe.getEvaluaciones().isEmpty()) {
+			doc.add(new Paragraph(" "));
+			doc.add(new Paragraph("EVALUACIONES RA", titleFont));
+			doc.add(new Paragraph(" "));
 
-		for (EvaluacionRa ev : fe.getEvaluaciones()) {
+			for (EvaluacionRa ev : fe.getEvaluaciones()) {
 
-			String estado = ev.getEstado() != null ? ev.getEstado().toString() : "SIN EVALUAR";
+				String estado = ev.getEstado() != null ? ev.getEstado().toString() : "SIN EVALUAR";
 
-			doc.add(new Paragraph(ev.getResultadoAprendizaje().getCodigo() + " - "
-					+ ev.getResultadoAprendizaje().getDescripcion() + " : " + estado));
+				doc.add(new Paragraph(ev.getResultadoAprendizaje().getCodigo() + " - "
+						+ ev.getResultadoAprendizaje().getDescripcion() + " : " + estado));
+			}
 		}
 
 		doc.close();
@@ -905,6 +977,14 @@ public class GestionFormacionController implements Initializable {
 
 		boolean fe = cbFEFalta.getValue() == null;
 		cbFEFalta.pseudoClassStateChanged(EMPTY, fe);
+
+		if (!fe) {
+			if (cbFEFalta.getValue().getEstado() == EstadoFE.FINALIZADA)
+				fe = true;
+
+			lblErrorFalta.setVisible(fe);
+			lblErrorFalta.setManaged(fe);
+		}
 
 		boolean fecha = dpFechaFalta.getValue() == null;
 		dpFechaFalta.pseudoClassStateChanged(EMPTY, fecha);

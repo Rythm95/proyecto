@@ -15,7 +15,7 @@ import com.simao.tarea3AD2024base.modelo.Tutor;
 @Repository
 public interface FormacionEmpresaRepository extends JpaRepository<FormacionEmpresa, Long> {
 
-	@Query("SELECT DISTINCT fe FROM FormacionEmpresa fe LEFT JOIN FETCH fe.evaluaciones ev LEFT JOIN FETCH ev.resultadoAprendizaje ra WHERE fe.id = :id")
+	@Query("SELECT DISTINCT fe FROM FormacionEmpresa fe LEFT JOIN FETCH fe.evaluaciones ev LEFT JOIN FETCH ev.resultadoAprendizaje ra LEFT JOIN FETCH ra.modulo m WHERE fe.id = :id")
 	Optional<FormacionEmpresa> findByIdWithEvaluaciones(@Param("id") Long id);
 
 	@Query("SELECT DISTINCT fe.alumno FROM FormacionEmpresa fe WHERE fe.tutorEmpresa.id = :tutorId")

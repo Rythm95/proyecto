@@ -462,7 +462,8 @@ public class GestionAlumnoController implements Initializable {
 		alumno.setMayoriaEdad(checkEditEdad.isSelected());
 
 		alumno.setUser(txtEditUsername.getText());
-		alumno.setPassword(Hasher.md5(txtEditPassword.getText()));
+		if (!txtEditPassword.getText().isBlank())
+			alumno.setPassword(Hasher.md5(txtEditPassword.getText()));
 
 		alService.update(alumno);
 
@@ -590,9 +591,13 @@ public class GestionAlumnoController implements Initializable {
 		}
 
 		String txtPassword = tfPassword.getText();
-		boolean password = txtPassword.isEmpty();
+		boolean password = false;
+		if (!edit) {
+			password = txtPassword.isEmpty();
+		}
+		
 		tfPassword.pseudoClassStateChanged(EMPTY, password);
-		if (!password) {
+		if (!txtPassword.isEmpty()) {
 			if (txtPassword.length() <= 2) {
 				password = true;
 				lblPassword.setText("La contraseña debe contener más de 2 caracteres.");

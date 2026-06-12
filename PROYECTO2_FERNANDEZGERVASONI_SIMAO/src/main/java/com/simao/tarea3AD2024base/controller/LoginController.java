@@ -1,7 +1,7 @@
 package com.simao.tarea3AD2024base.controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -77,8 +77,8 @@ public class LoginController implements Initializable {
 		session.clear();
 
 		Properties properties = new Properties();
-		try (FileInputStream fis = new FileInputStream("src/main/resources/application.properties")) {
-			properties.load(fis);
+		try (InputStream is = getClass().getResourceAsStream("/application.properties")) {
+			properties.load(is);
 		} catch (IOException e) {
 			logger.warning("Error al leer el fichero de propiedades: " + e.getMessage());
 		}

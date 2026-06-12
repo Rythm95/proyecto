@@ -17,6 +17,7 @@ import com.simao.tarea3AD2024base.services.Session;
 import javafx.css.PseudoClass;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -101,9 +102,25 @@ public class GestionDatosPropiosController implements Initializable {
 		p.setNombre(txtEditNombre.getText());
 		p.setEmail(txtEditEmail.getText());
 		p.setUser(txtEditUsername.getText());
-		p.setPassword(Hasher.md5(txtEditPassword.getText()));
+		if (!txtEditPassword.getText().isBlank())
+			p.setPassword(Hasher.md5(txtEditPassword.getText()));
 
 		peService.update(p);
+
+		alert("Se han actualizado los datos correctamente.");
+	}
+
+	/**
+	 * Alerta al usuario con un mensaje.
+	 * 
+	 * @param mensaje
+	 */
+	private void alert(String mensaje) {
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("Datos Actualizados");
+		alert.setHeaderText(null);
+		alert.setContentText(mensaje);
+		alert.showAndWait();
 	}
 
 	/**
@@ -203,9 +220,9 @@ public class GestionDatosPropiosController implements Initializable {
 		}
 
 		String txtPassword = tfPassword.getText();
-		boolean password = txtPassword.isEmpty();
-		tfPassword.pseudoClassStateChanged(EMPTY, password);
-		if (!password) {
+		boolean password = false;
+
+		if (!txtPassword.isEmpty()) {
 			if (txtPassword.length() <= 2) {
 				password = true;
 				lblPassword.setText("La contraseña debe contener más de 2 caracteres.");

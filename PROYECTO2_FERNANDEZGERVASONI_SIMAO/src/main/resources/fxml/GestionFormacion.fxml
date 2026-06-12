@@ -73,6 +73,7 @@
 						<VBox spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
 							<children>
 								<ComboBox fx:id="cbEvaluarFE" prefWidth="150.0" promptText="Selecciona FE" />
+								<Label fx:id="lblEval" managed="false" visible="false" text="Selecciona una opción en cada RA para evaluar la formación." styleClass="error-label"/>
 								<VBox fx:id="boxEvaluaciones" spacing="10" styleClass="form" HBox.hgrow="ALWAYS">
 								</VBox>
 							</children>
@@ -87,6 +88,7 @@
 								<DatePicker fx:id="dpFechaFalta" />
 								<TextArea fx:id="txtDescripcionFalta" prefRowCount="4" promptText="Descripción de la falta..." />
 								<CheckBox fx:id="checkJustificada" text="Falta justificada" />
+								<Label fx:id="lblErrorFalta" managed="false" visible="false" text="Esta FE está finalizada y no se puede modificar." styleClass="error-label"/>
 								<HBox spacing="10">
 									<children>
 										<Button onAction="#switchFaltas" styleClass="btn-primary" text="Guardar Falta" />
