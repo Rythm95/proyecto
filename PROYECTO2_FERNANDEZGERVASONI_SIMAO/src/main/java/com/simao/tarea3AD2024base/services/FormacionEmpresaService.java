@@ -47,6 +47,10 @@ public class FormacionEmpresaService {
 	public List<Alumno> getAlumnosByTutor(Long idTutor) {
 		return repo.findAlumnosByTutorEmpresa(idTutor);
 	}
+	
+	public List<Alumno> getAlumnosByProfesor(Long idProfe) {
+		return repo.findAlumnosByTutorCentro(idProfe);
+	}
 
 	public List<FormacionEmpresa> findAll() {
 		return repo.findAll();

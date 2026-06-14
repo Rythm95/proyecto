@@ -36,8 +36,6 @@ public class Curso {
 	@ManyToOne
 	private Profesor coordinador;
 
-	private String yearAcademico;
-
 	@OneToMany(mappedBy = "curso")
 	private List<Alumno> alumnos = new ArrayList<>();
 
@@ -83,14 +81,6 @@ public class Curso {
 
 	public void setCoordinador(Profesor coordinador) {
 		this.coordinador = coordinador;
-	}
-
-	public String getYearAcademico() {
-		return yearAcademico;
-	}
-
-	public void setYearAcademico(String yearAcademico) {
-		this.yearAcademico = yearAcademico;
 	}
 
 	public List<Alumno> getAlumnos() {

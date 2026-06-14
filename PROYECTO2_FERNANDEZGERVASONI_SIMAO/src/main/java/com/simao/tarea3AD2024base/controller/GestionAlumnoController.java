@@ -1,13 +1,17 @@
 package com.simao.tarea3AD2024base.controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Controller;
 
 import com.simao.tarea3AD2024base.config.StageManager;
@@ -15,11 +19,13 @@ import com.simao.tarea3AD2024base.modelo.Alumno;
 import com.simao.tarea3AD2024base.modelo.Curso;
 import com.simao.tarea3AD2024base.modelo.Perfil;
 import com.simao.tarea3AD2024base.modelo.Persona;
+import com.simao.tarea3AD2024base.modelo.Profesor;
 import com.simao.tarea3AD2024base.services.AlumnoService;
 import com.simao.tarea3AD2024base.services.CursoService;
 import com.simao.tarea3AD2024base.services.FormacionEmpresaService;
 import com.simao.tarea3AD2024base.services.Hasher;
 import com.simao.tarea3AD2024base.services.PersonaService;
+import com.simao.tarea3AD2024base.services.ProfesorService;
 import com.simao.tarea3AD2024base.services.Session;
 import com.simao.tarea3AD2024base.view.FxmlView;
 
@@ -57,6 +63,9 @@ public class GestionAlumnoController implements Initializable {
 
 	@Autowired
 	private PersonaService peService;
+	
+	@Autowired
+	private ProfesorService prService;
 
 	@Autowired
 	private AlumnoService alService;
@@ -72,6 +81,11 @@ public class GestionAlumnoController implements Initializable {
 
 	@Autowired
 	private ApplicationEventPublisher evPublisher;
+	
+	@EventListener
+	public void onNewCurso(NewCursoEvent event) {
+		cargarCursos();
+	}
 
 	@FXML
 	private HBox boxBuscar;
@@ -99,7 +113,7 @@ public class GestionAlumnoController implements Initializable {
 
 	@FXML
 	private ComboBox<Curso> cbCursos;
-	
+
 	@FXML
 	private Label lblCursosError;
 
@@ -135,7 +149,7 @@ public class GestionAlumnoController implements Initializable {
 
 	@FXML
 	private ComboBox<Curso> cbEditCursos;
-	
+
 	@FXML
 	private Label lblEditCursosError;
 
@@ -198,7 +212,7 @@ public class GestionAlumnoController implements Initializable {
 			btnEditar.setVisible(false);
 			btnEditar.setManaged(false);
 		} else {
-			cbEditarAlumno.getSelectionModel().selectedItemProperty().addListener((_, _, alumno) -> {
+			cbEditarAlumno.getSelectionModel().selectedItemProperty().addListener((v, w, alumno) -> {
 				cargarEditar(alumno);
 			});
 
@@ -221,16 +235,27 @@ public class GestionAlumnoController implements Initializable {
 
 		if (session.getPerfil() == Perfil.TUTOR)
 			alumnos = feService.getAlumnosByTutor(session.getUserId());
-		else
+		
+		else if (session.getPerfil() == Perfil.PROFESORADO) {
+			Profesor profe = prService.find(session.getUserId()) ;
+			Set<Alumno> alumnSet = new HashSet<>(feService.getAlumnosByProfesor(profe.getId()));
+			List<Curso> cursosCoord = cuService.findByProfesor(profe);
+			for (Curso cu : cursosCoord) {
+				alumnSet.addAll(alService.findByCurso(cu));
+			}
+			
+			alumnos = new ArrayList<>(alumnSet);
+			
+		} else
 			alumnos = alService.findAll();
 
 		ObservableList<Alumno> datos = FXCollections.observableArrayList(alumnos);
 
 		colNombre.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNombre()));
-		colNombre.setCellFactory(_ -> new TableCell<>() {
+		colNombre.setCellFactory(v -> new TableCell<>() {
 			private final Hyperlink link = new Hyperlink();
 			{
-				link.setOnAction(_ -> {
+				link.setOnAction(v -> {
 					Alumno alumno = getTableView().getItems().get(getIndex());
 					abrirFichaAlumno(alumno);
 				});
@@ -397,8 +422,8 @@ public class GestionAlumnoController implements Initializable {
 	 */
 	@FXML
 	private void guardar() {
-		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbCursos, lblCursosError, txtUsername, lblUsernameError,
-				txtPassword, lblPasswordError, false))
+		if (validar(txtNombre, lblNombreError, txtEmail, lblEmailError, cbCursos, lblCursosError, txtUsername,
+				lblUsernameError, txtPassword, lblPasswordError, false))
 			return;
 
 		Alumno alumno = new Alumno();
@@ -451,8 +476,8 @@ public class GestionAlumnoController implements Initializable {
 		if (alumno == null)
 			return;
 
-		if (validar(txtEditNombre, lblEditNombreError, txtEditEmail, lblEditEmailError, cbEditCursos, lblEditCursosError, txtEditUsername,
-				lblEditUsernameError, txtEditPassword, lblEditPasswordError, true))
+		if (validar(txtEditNombre, lblEditNombreError, txtEditEmail, lblEditEmailError, cbEditCursos,
+				lblEditCursosError, txtEditUsername, lblEditUsernameError, txtEditPassword, lblEditPasswordError, true))
 			return;
 
 		alumno.setNombre(txtEditNombre.getText());
@@ -500,8 +525,8 @@ public class GestionAlumnoController implements Initializable {
 	 * @return true si hay errores de validación, false si los datos son válidos
 	 */
 	private boolean validar(TextField tfNombre, Label lblNombre, TextField tfEmail, Label lblEmail,
-			ComboBox<Curso> cbCur, Label lblCursos, TextField tfUser, Label lblUser, PasswordField tfPassword, Label lblPassword,
-			boolean edit) {
+			ComboBox<Curso> cbCur, Label lblCursos, TextField tfUser, Label lblUser, PasswordField tfPassword,
+			Label lblPassword, boolean edit) {
 
 		Persona alEmail = peService.findByEmail(tfEmail.getText());
 		Persona alUser = peService.findByUser(tfUser.getText());
@@ -548,7 +573,7 @@ public class GestionAlumnoController implements Initializable {
 
 		boolean curso = cbCur.getValue() == null;
 		cbCur.pseudoClassStateChanged(EMPTY, curso);
-		
+
 		if (!curso) {
 			if (cbCur.getValue().getCoordinador() == null) {
 				curso = true;
@@ -595,7 +620,7 @@ public class GestionAlumnoController implements Initializable {
 		if (!edit) {
 			password = txtPassword.isEmpty();
 		}
-		
+
 		tfPassword.pseudoClassStateChanged(EMPTY, password);
 		if (!txtPassword.isEmpty()) {
 			if (txtPassword.length() <= 2) {

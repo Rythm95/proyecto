@@ -32,7 +32,7 @@
                         <HBox spacing="10">
                            <children>
                               <Button onAction="#switchNuevo" styleClass="btn-primary" text="Guardar" />
-                              <Button onAction="#switchBuscar" styleClass="btn-secondary" text="Cancelar" />
+                              <Button onAction="#limpiarForm" styleClass="btn-secondary" text="Cancelar" />
                            </children>
                         </HBox>
                      </children>
@@ -50,7 +50,7 @@
                         <HBox spacing="10">
                            <children>
                               <Button onAction="#switchEditar" styleClass="btn-primary" text="Guardar Cambios" />
-                              <Button onAction="#switchBuscar" styleClass="btn-secondary" text="Cancelar" />
+                              <Button onAction="#limpiarForm" styleClass="btn-secondary" text="Cancelar" />
                            </children>
                         </HBox>
                      </children>

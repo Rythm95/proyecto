@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.simao.tarea3AD2024base.modelo.Curso;
+import com.simao.tarea3AD2024base.modelo.Profesor;
 import com.simao.tarea3AD2024base.repositorios.CursoRepository;
 
 @Service
@@ -28,6 +29,10 @@ public class CursoService {
 
 	public List<Curso> findAll() {
 		return repo.findAll();
+	}
+	
+	public List<Curso> findByProfesor(Profesor profe){
+		return repo.findByCoordinador(profe);
 	}
 
 }

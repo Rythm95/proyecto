@@ -100,7 +100,7 @@ public class GestionEmpresaController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		cbEditarEmpresa.getSelectionModel().selectedItemProperty().addListener((_, _, empresa) -> {
+		cbEditarEmpresa.getSelectionModel().selectedItemProperty().addListener((v, w, empresa) -> {
 			cargarEditar(empresa);
 		});
 
@@ -248,10 +248,26 @@ public class GestionEmpresaController implements Initializable {
 
 		emService.save(empresa);
 
-		switchBuscar();
 		cargarEmpresas();
+		limpiarForm();
 
 		evPublisher.publishEvent(new NewEmpresaEvent(empresa));
+	}
+
+	/**
+	 * Limpia el formulario de registro o edición de empresa según el que esté visible.
+	 */
+	@FXML
+	private void limpiarForm() {
+		if (boxNuevo.isVisible()) {
+			txtNombre.clear();
+			txtDireccion.clear();
+		} else {
+			cbEditarEmpresa.setValue(null);
+			txtEditNombre.clear();
+			txtEditDireccion.clear();
+		}
+		switchBuscar();
 	}
 
 	/**
@@ -286,8 +302,8 @@ public class GestionEmpresaController implements Initializable {
 
 		emService.update(empresa);
 
-		switchBuscar();
 		cargarEmpresas();
+		limpiarForm();
 
 		evPublisher.publishEvent(new NewEmpresaEvent(empresa));
 	}

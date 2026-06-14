@@ -183,6 +183,9 @@ public class FichaAlumnoController implements Initializable {
 		if (session.getPerfil() == Perfil.TUTOR) {
 			btnExp.setVisible(false);
 			btnExp.setManaged(false);
+		} else if (session.getPerfil() == Perfil.PROFESORADO) {
+			formValorar.setVisible(false);
+			formValorar.setManaged(false);
 		}
 
 		tpEval.setVisible(false);
@@ -204,7 +207,7 @@ public class FichaAlumnoController implements Initializable {
 		} else
 			cargarFEs(fes);
 
-		tvFormaciones.getSelectionModel().selectedItemProperty().addListener((_, _, fe) -> {
+		tvFormaciones.getSelectionModel().selectedItemProperty().addListener((v, w, fe) -> {
 			if (fe != null) {
 				cargarFaltas(fe);
 				cargarEvaluaciones(fe);

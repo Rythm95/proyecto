@@ -313,11 +313,11 @@ public class AdminController implements Initializable {
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		cbProfeEditar.getSelectionModel().selectedItemProperty().addListener((_, _, profe) -> {
+		cbProfeEditar.getSelectionModel().selectedItemProperty().addListener((v, w, profe) -> {
 			cargarProfeEditar(profe);
 		});
 
-		cbRAEdit.getSelectionModel().selectedItemProperty().addListener((_, _, ra) -> {
+		cbRAEdit.getSelectionModel().selectedItemProperty().addListener((v, w, ra) -> {
 			cargarRAEditar(ra);
 		});
 
@@ -989,6 +989,7 @@ public class AdminController implements Initializable {
 
 		cursoSeleccionado.setCoordinador(coordinador);
 		cuService.update(cursoSeleccionado);
+		evPublisher.publishEvent(new NewCursoEvent(cursoSeleccionado));
 
 		cargarCursos();
 	}

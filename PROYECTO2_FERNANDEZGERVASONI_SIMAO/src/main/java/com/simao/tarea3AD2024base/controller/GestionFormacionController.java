@@ -7,9 +7,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -22,6 +24,7 @@ import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
 import com.simao.tarea3AD2024base.config.StageManager;
 import com.simao.tarea3AD2024base.modelo.Alumno;
+import com.simao.tarea3AD2024base.modelo.Curso;
 import com.simao.tarea3AD2024base.modelo.EstadoFE;
 import com.simao.tarea3AD2024base.modelo.EstadoRA;
 import com.simao.tarea3AD2024base.modelo.EvaluacionRa;
@@ -33,6 +36,7 @@ import com.simao.tarea3AD2024base.modelo.Profesor;
 import com.simao.tarea3AD2024base.modelo.ResultadoAprendizaje;
 import com.simao.tarea3AD2024base.modelo.Tutor;
 import com.simao.tarea3AD2024base.services.AlumnoService;
+import com.simao.tarea3AD2024base.services.CursoService;
 import com.simao.tarea3AD2024base.services.FaltaService;
 import com.simao.tarea3AD2024base.services.FormacionEmpresaService;
 import com.simao.tarea3AD2024base.services.ProfesorService;
@@ -95,6 +99,9 @@ public class GestionFormacionController implements Initializable {
 
 	@Autowired
 	private FaltaService faService;
+	
+	@Autowired
+	private CursoService cuService;
 
 	@Autowired
 	private Session session;
@@ -262,11 +269,11 @@ public class GestionFormacionController implements Initializable {
 			}
 		}
 
-		cbEditarFE.getSelectionModel().selectedItemProperty().addListener((_, _, fe) -> {
+		cbEditarFE.getSelectionModel().selectedItemProperty().addListener((v, w, fe) -> {
 			cargarEditar(fe);
 		});
 
-		cbEvaluarFE.getSelectionModel().selectedItemProperty().addListener((_, _, fe) -> {
+		cbEvaluarFE.getSelectionModel().selectedItemProperty().addListener((v, w, fe) -> {
 
 			if (fe == null) {
 				boxEvaluaciones.getChildren().clear();
@@ -298,6 +305,17 @@ public class GestionFormacionController implements Initializable {
 			fes = feService.findByTutor(tuService.find(session.getUserId()));
 		else if (session.getPerfil() == Perfil.ALUMNADO)
 			fes = feService.findByAlumno(alService.find(session.getUserId()));
+		else if (session.getPerfil() == Perfil.PROFESORADO) {
+			Profesor profe = prService.find(session.getUserId()) ;
+			Set<Alumno> alumnSet = new HashSet<>(feService.getAlumnosByProfesor(profe.getId()));
+			List<Curso> cursosCoord = cuService.findByProfesor(profe);
+			for (Curso cu : cursosCoord) {
+				alumnSet.addAll(alService.findByCurso(cu));
+			}
+			for (Alumno al : alumnSet) {
+				fes.addAll(feService.findByAlumno(al));
+			}
+		}
 		else
 			fes = feService.findAll();
 
@@ -306,10 +324,10 @@ public class GestionFormacionController implements Initializable {
 		ObservableList<FormacionEmpresa> datos = FXCollections.observableArrayList(fes);
 
 		colAlumno.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getAlumno().getNombre()));
-		colAlumno.setCellFactory(_ -> new TableCell<>() {
+		colAlumno.setCellFactory(v -> new TableCell<>() {
 			private final Hyperlink link = new Hyperlink();
 			{
-				link.setOnAction(_ -> {
+				link.setOnAction(v -> {
 					Alumno alumno = getTableView().getItems().get(getIndex()).getAlumno();
 					abrirFichaAlumno(alumno);
 				});
@@ -526,7 +544,7 @@ public class GestionFormacionController implements Initializable {
 		fe.setPeriodo(cbPeriodo.getValue());
 		fe.setFechaIni(dpIni.getValue());
 		fe.setFechaFin(dpFin.getValue());
-		if (dpIni.getValue().isBefore(LocalDate.now()))
+		if (dpIni.getValue().isAfter(LocalDate.now()))
 			fe.setEstado(EstadoFE.PENDIENTE);
 		else
 			fe.setEstado(EstadoFE.ACTIVA);
@@ -617,7 +635,7 @@ public class GestionFormacionController implements Initializable {
 			nfe.setPeriodo(cbPeriodoEdit.getValue());
 			nfe.setFechaIni(dpIniEdit.getValue());
 			nfe.setFechaFin(dpFinEdit.getValue());
-			if (dpIni.getValue().isBefore(LocalDate.now()))
+			if (dpIniEdit.getValue().isAfter(LocalDate.now()))
 				fe.setEstado(EstadoFE.PENDIENTE);
 			else
 				fe.setEstado(EstadoFE.ACTIVA);
@@ -633,7 +651,7 @@ public class GestionFormacionController implements Initializable {
 			fe.setPeriodo(cbPeriodoEdit.getValue());
 			fe.setFechaIni(dpIniEdit.getValue());
 			fe.setFechaFin(dpFinEdit.getValue());
-			if (dpIni.getValue().isBefore(LocalDate.now()))
+			if (dpIniEdit.getValue().isAfter(LocalDate.now()))
 				fe.setEstado(EstadoFE.PENDIENTE);
 			else
 				fe.setEstado(EstadoFE.ACTIVA);
@@ -917,6 +935,7 @@ public class GestionFormacionController implements Initializable {
 		doc.open();
 
 		Font titleFont = new Font(Font.HELVETICA, 18, Font.BOLD);
+		Font subtitleFont = new Font(Font.HELVETICA, 14, Font.BOLD);
 
 		doc.add(new Paragraph("FORMACIÓN EN EMPRESA", titleFont));
 		doc.add(new Paragraph(" "));
@@ -932,7 +951,7 @@ public class GestionFormacionController implements Initializable {
 
 		if (!fe.getEvaluaciones().isEmpty()) {
 			doc.add(new Paragraph(" "));
-			doc.add(new Paragraph("EVALUACIONES RA", titleFont));
+			doc.add(new Paragraph("Evaluaciones RA", titleFont));
 			doc.add(new Paragraph(" "));
 
 			for (EvaluacionRa ev : fe.getEvaluaciones()) {
@@ -944,7 +963,21 @@ public class GestionFormacionController implements Initializable {
 			}
 		}
 
+		if (!fe.getValoracion().isBlank()) {
+			doc.add(new Paragraph(" "));
+			doc.add(new Paragraph("Valoración del Alumno", subtitleFont));
+			doc.add(new Paragraph(" "));
+
+			doc.add(new Paragraph("\"" + fe.getValoracion() + "\""));
+		}
+
 		doc.close();
+
+		Alert alert = new Alert(Alert.AlertType.INFORMATION);
+		alert.setTitle("FE exportada");
+		alert.setHeaderText(null);
+		alert.setContentText("Se ha exportado un pdf con la información de la FE correctamente.");
+		alert.showAndWait();
 	}
 
 	/**

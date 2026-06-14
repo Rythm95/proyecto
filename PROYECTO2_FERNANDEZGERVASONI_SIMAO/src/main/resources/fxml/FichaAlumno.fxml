@@ -21,7 +21,7 @@
 			<padding>
 				<Insets bottom="10" left="20" right="20" top="10" />
 			</padding>
-			<Label styleClass="title" text="Alumno" />
+			<Label styleClass="title" text="Ficha del Alumno" />
 			<HBox prefHeight="0.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
 			<Button onAction="#goBack" styleClass="btn-primary" text="Volver" />
 		</HBox>

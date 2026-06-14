@@ -157,7 +157,7 @@
 							</children>
 						</HBox>
 						<Button fx:id="btnCrearModulo" onAction="#switchNuevoModulo" styleClass="btn-primary" text="Nuevo" />
-						<Button fx:id="btnAsignarModulo" onAction="#switchAsignarModulo" styleClass="btn-secondary" text="Asignar" />
+						<Button fx:id="btnAsignarModulo" onAction="#switchAsignarModulo" styleClass="btn-secondary" text="Reasignar" />
 						<Button fx:id="btnEditarModulo" onAction="#switchEditarModulo" styleClass="btn-secondary" text="Editar" />
 					</HBox>
 					<TableView fx:id="tablaModulos" VBox.vgrow="ALWAYS">

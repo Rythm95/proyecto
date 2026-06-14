@@ -159,7 +159,7 @@ public class GestionTutorController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		cbEditarTutor.getSelectionModel().selectedItemProperty().addListener((_, _, tutor) -> {
+		cbEditarTutor.getSelectionModel().selectedItemProperty().addListener((v, w, tutor) -> {
 			cargarEditar(tutor);
 		});
 
